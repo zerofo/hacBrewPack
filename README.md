@@ -46,7 +46,6 @@ You can use --nologo if you don't have any custom logo and you don't have the or
 ```
 *nix: ./hacbrewpack [options...]  
 Windows: .\hacbrewpack [options...]  
-Usage: hackbrewpack [options...]  
   
 Options:  
 -k, --keyset             Set keyset filepath, default filepath is ./keys.dat  
