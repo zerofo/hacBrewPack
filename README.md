@@ -5,7 +5,7 @@
 hacBrewPack is a tool for creating Nintendo Switch NCAs (Nintendo Content Archive) from homebrews and pack them into NSPs (Nintendo Submission Package)  
 hacBrewPack is WIP and it's at very early stages  
   
-Thanks: SciresM, yellows8, SwitchBrew
+Thanks: SciresM, yellows8, Adubbz, SwitchBrew
 
 ## Usage
 
@@ -42,7 +42,7 @@ If you don't put your icon in control folder, you'll see a general icon after in
 "logo" folder should contain "NintendoLogo.png" and "StartupMovie.gif", they'll appear when the app is loading  
 Both files are not licensed according to [switchbrew](http://switchbrew.org/index.php/NCA_Content_FS) but i didn't include them anyway, You can also replace these files with custom ones  
 You can use --nologo if you don't have any custom logo and you don't have the original ones, as the result switch will show a black screen without nintendo logo at top left and switch animation on bottom right  
-### CLI options:  
+### CLI Options:  
 ```
 *nix: ./hacbrewpack [options...]  
 Windows: .\hacbrewpack [options...]  

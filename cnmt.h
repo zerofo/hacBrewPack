@@ -10,13 +10,19 @@ typedef struct {
     uint32_t title_version;
     uint8_t type;
     uint8_t _0xD;
-    uint16_t content_entry_offset;
+    uint16_t extended_header_size;
     uint16_t content_entry_count;
     uint16_t meta_entry_count;
     uint8_t _0x14[0xC];
-    uint64_t patch_id;
-    uint64_t min_version;
 } cnmt_header_t;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    uint64_t patch_title_id;
+    uint32_t required_system_version;
+    uint32_t padding;
+} cnmt_extended_application_header_t;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
