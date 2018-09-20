@@ -50,6 +50,7 @@ typedef struct {
     filepath_t control_romfs_dir;
     uint8_t noromfs;
     uint8_t nologo;
+    uint8_t plaintext;
 } hbp_settings_t;
 
 #endif

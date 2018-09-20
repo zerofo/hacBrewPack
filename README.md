@@ -21,7 +21,9 @@ key_area_key_application_xx | Application key area encryption keys
 
 ### Compiling Homebrew
 You need to compile homebrew with proper makefile, you can use the one in template folder  
-Compiled homebrew must have the following files:  
+You must use valid lower-case TitleID in Makefile and npdm.json. Valid TitleID range is: 0x0100000000000000 - 0x01ffffffffffffff  
+Both TitleIDs in Makefile and npdm.json must be the same  
+Compiled homebrew must have following files:  
 ```
 build\exefs\main  
 build\exefs\main.npdm  
@@ -31,7 +33,7 @@ You must place created 'main' and 'main.npdm' files in exefs folder, you can fin
 You must rename created nacp file to 'control.nacp' and place it in control folder  
 
 ### Icon
-You should place your icon with "icon_{Language}.dat" file name in control folder, "icon_AmericanEnglish.dat" is the default one if you don't manually edit your nacp, dat files are just renamed jpg files  
+You should place your icon with "icon_{Language}.dat" file name in control folder, "icon_AmericanEnglish.dat" is the default one if you don't manually edit your nacp. dat files are just renamed jpg files  
 Check [switchbrew](http://switchbrew.org/index.php/Settings_services#LanguageCode) for more info about language names  
 Your icon file format must be JPEG with 256x256 dimensions  
 It's highly recomended to delete unnecessary exif data from your jpeg file (easy way: Open icon with GIMP or Paint, save as bmp, Open it again and save as jpeg)  
@@ -45,7 +47,7 @@ You can use --nologo if you don't have any custom logo and you don't have the or
 ### CLI Options:  
 ```
 *nix: ./hacbrewpack [options...]  
-Windows: .\hacbrewpack [options...]  
+Windows: .\hacbrewpack.exe [options...]  
   
 Options:  
 -k, --keyset             Set keyset filepath, default filepath is ./keys.dat  
@@ -57,8 +59,9 @@ Options:
 --romfsdir               Set program romfs directory path, default path is ./romfs/  
 --logodir                Set program logo directory path, default path is ./logo/  
 --controldir             Set control romfs directory path, default path is ./control/  
---noromfs                Skips creating program romfs section  
---nologo                 Skips creating program logo section  
+--noromfs                Skip creating program romfs section  
+--nologo                 Skip creating program logo section  
+--plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
 ```
 Also check template folder for default folder structure, makefile and npdm json  
   

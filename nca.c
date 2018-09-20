@@ -91,12 +91,15 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.section_entries[0]._0x8[0] = 0x1;                                                     // Always 1
 
     nca_header.fs_headers[0].fs_type = FS_TYPE_ROMFS;
-    nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
-    nca_header.fs_headers[0]._0x0 = 0x2;       // Always 2
+    nca_header.fs_headers[0]._0x0 = 0x2; // Always 2
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.magic = MAGIC_IVFC;
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.id = 0x20000; //Always 0x20000
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.master_hash_size = 0x20;
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.num_levels = 0x7;
+    if (settings->plaintext == 0)
+        nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
+    else
+        nca_header.fs_headers[0].crypt_type = 0x1; // Plaintext
 
     // Calculate master hash and section hash
     printf("\n===> Calculating Hashes:\n");
@@ -110,10 +113,13 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Set encrypted key area key 2
     memset(nca_header.encrypted_keys[2], 4, 0x10);
 
-    // Encrypt section 0
     printf("===> Encrypting NCA\n");
-    printf("Encrypting section 0\n");
-    nca_encrypt_section(control_nca_file, &nca_header, 0);
+    if (settings->plaintext == 0)
+    {
+        // Encrypt section 0
+        printf("Encrypting section 0\n");
+        nca_encrypt_section(control_nca_file, &nca_header, 0);
+    }
 
     // Encrypt header
     printf("Getting NCA file size\n");
@@ -215,10 +221,13 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     nca_header.fs_headers[0].fs_type = FS_TYPE_PFS0;
     nca_header.fs_headers[0].partition_type = 0x1;
-    nca_header.fs_headers[0]._0x0 = 0x2;       // Always 2
-    nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
+    nca_header.fs_headers[0]._0x0 = 0x2; // Always 2
     nca_header.fs_headers[0].pfs0_superblock.always_2 = 0x2;
     nca_header.fs_headers[0].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
+    if (settings->plaintext == 0)
+        nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
+    else
+        nca_header.fs_headers[0].crypt_type = 0x1; // Plaintext
 
     // Calculate master hash and section hash
     printf("\n===> Calculating Hashes:\n");
@@ -283,12 +292,15 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         nca_header.section_entries[1]._0x8[0] = 0x1; // Always 1
 
         nca_header.fs_headers[1].fs_type = FS_TYPE_ROMFS;
-        nca_header.fs_headers[1].crypt_type = 0x3; // Regular crypto
-        nca_header.fs_headers[1]._0x0 = 0x2;       // Always 2
+        nca_header.fs_headers[1]._0x0 = 0x2; // Always 2
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.magic = MAGIC_IVFC;
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.id = 0x20000; //Always 0x20000
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.master_hash_size = 0x20;
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.num_levels = 0x7;
+        if (settings->plaintext == 0)
+            nca_header.fs_headers[1].crypt_type = 0x3; // Regular crypto
+        else
+            nca_header.fs_headers[1].crypt_type = 0x1; // Plaintext
 
         // Calculate master hash and section hash
         printf("\n===> Calculating Hashes:\n");
@@ -354,14 +366,17 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Set encrypted key area key 2
     memset(nca_header.encrypted_keys[2], 4, 0x10);
 
-    // Encrypt sections
     printf("===> Encrypting NCA\n");
-    printf("Encrypting section 0\n");
-    nca_encrypt_section(program_nca_file, &nca_header, 0);
-    if (settings->noromfs == 0)
+    // Encrypt sections
+    if (settings->plaintext == 0)
     {
-        printf("Encrypting section 1\n");
-        nca_encrypt_section(program_nca_file, &nca_header, 1);
+        printf("Encrypting section 0\n");
+        nca_encrypt_section(program_nca_file, &nca_header, 0);
+        if (settings->noromfs == 0)
+        {
+            printf("Encrypting section 1\n");
+            nca_encrypt_section(program_nca_file, &nca_header, 1);
+        }
     }
 
     // Encrypt header
@@ -476,10 +491,13 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     nca_header.fs_headers[0].fs_type = FS_TYPE_PFS0;
     nca_header.fs_headers[0].partition_type = 0x1;
-    nca_header.fs_headers[0]._0x0 = 0x2;       // Always 2
-    nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
+    nca_header.fs_headers[0]._0x0 = 0x2; // Always 2
     nca_header.fs_headers[0].pfs0_superblock.always_2 = 0x2;
     nca_header.fs_headers[0].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
+    if (settings->plaintext == 0)
+        nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
+    else
+        nca_header.fs_headers[0].crypt_type = 0x1; // Plaintext
 
     // Calculate master hash and section hash
     printf("\n===> Calculating Hashes:\n");
@@ -493,10 +511,13 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Set encrypted key area key 2
     memset(nca_header.encrypted_keys[2], 4, 0x10);
 
-    // Encrypt section 0
     printf("===> Encrypting NCA\n");
-    printf("Encrypting section 0\n");
-    nca_encrypt_section(meta_nca_file, &nca_header, 0);
+    if (settings->plaintext == 0)
+    {
+        // Encrypt section 0
+        printf("Encrypting section 0\n");
+        nca_encrypt_section(meta_nca_file, &nca_header, 0);
+    }
 
     // Encrypt header
     printf("Getting NCA file size\n");

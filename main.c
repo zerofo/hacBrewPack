@@ -31,8 +31,9 @@ static void usage(void)
             "--romfsdir               Set program romfs directory path, default path is ." OS_PATH_SEPARATOR "romfs" OS_PATH_SEPARATOR "\n"
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
-            "--noromfs                Skips creating program romfs section\n"
-            "--nologo                Skips creating program logo section\n",
+            "--noromfs                Skip creating program romfs section\n"
+            "--nologo                 Skip creating program logo section\n"
+            "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n",
             USAGE_PROGRAM_NAME);
     exit(EXIT_FAILURE);
 }
@@ -98,6 +99,7 @@ int main(int argc, char **argv)
                 {"controldir", 1, NULL, 7},
                 {"noromfs", 0, NULL, 8},
                 {"nologo", 0, NULL, 9},
+                {"plaintext", 0, NULL, 10},
                 {NULL, 0, NULL, 0},
             };
 
@@ -139,6 +141,9 @@ int main(int argc, char **argv)
             break;
         case 9:
             settings.nologo = 1;
+            break;
+        case 10:
+            settings.plaintext = 1;
             break;
         default:
             usage();
