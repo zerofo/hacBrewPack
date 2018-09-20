@@ -1,2 +1,6 @@
+v0.99-beta.2
+Added NACP verification for TitleID, Title Name and Author
+Added Plaintext option
+
 v0.99-beta.1
 Initial Release
