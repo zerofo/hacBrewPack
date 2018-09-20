@@ -8,6 +8,8 @@ hacBrewPack is WIP and it's at very early stages
 Thanks: SciresM, yellows8, SwitchBrew
 
 ## Usage
+
+### Keys
 You should place your keyset file with "keys.dat" filename in the same folder as hacBewPack  
 Alternatively, You can use -k or --keyset option to load your keyset file  
 Required keys are:  
@@ -17,6 +19,7 @@ Key Name | Description
 header_key | NCA Header Key
 key_area_key_application_xx | Application key area encryption keys
 
+### Compiling Homebrew
 You need to compile homebrew with proper makefile, you can use the one in template folder  
 Compiled homebrew must have the following files:  
 ```
@@ -25,17 +28,21 @@ build\exefs\main.npdm
 [TARGET].nacp  
 ```
 You must place created 'main' and 'main.npdm' files in exefs folder, you can find them in build/exefs  
-You must place created nacp file with 'control.nacp' filename in control folder  
-You should place your icon with "icon_{Language}.dat" file name in control folder, "icon_AmericanEnglish.dat" is the default one if you don't manually edit your nacp  
+You must rename created nacp file to 'control.nacp' and place it in control folder  
+
+### Icon
+You should place your icon with "icon_{Language}.dat" file name in control folder, "icon_AmericanEnglish.dat" is the default one if you don't manually edit your nacp, dat files are just renamed jpg files  
 Check [switchbrew](http://switchbrew.org/index.php/Settings_services#LanguageCode) for more info about language names  
 Your icon file format must be JPEG with 256x256 dimensions  
-If you see placeholder instead of icon after installing nsp, It's likely due to exif data, To delete extra exif data, Open icon with GIMP or Paint, save as bmp, Open it again and save as jpeg  
+It's highly recomended to delete unnecessary exif data from your jpeg file (easy way: Open icon with GIMP or Paint, save as bmp, Open it again and save as jpeg)  
+If you see placeholder instead of icon after installing nsp, It's likely due to exif data  
 If you have some exif data that horizon os doesn't like (like Camera Brand), Your app may leave in installing state in qlaunch  
 If you don't put your icon in control folder, you'll see a general icon after installing nsp (i don't recommend this)  
+### Logo
 "logo" folder should contain "NintendoLogo.png" and "StartupMovie.gif", they'll appear when the app is loading  
 Both files are not licensed according to [switchbrew](http://switchbrew.org/index.php/NCA_Content_FS) but i didn't include them anyway, You can also replace these files with custom ones  
 You can use --nologo if you don't have any custom logo and you don't have the original ones, as the result switch will show a black screen without nintendo logo at top left and switch animation on bottom right  
-CLI options:  
+### CLI options:  
 ```
 *nix: ./hacbrewpack [options...]  
 Windows: .\hacbrewpack [options...]  
