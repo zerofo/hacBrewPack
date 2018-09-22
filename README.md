@@ -59,11 +59,12 @@ Options:
 --romfsdir               Set program romfs directory path, default path is ./romfs/  
 --logodir                Set program logo directory path, default path is ./logo/  
 --controldir             Set control romfs directory path, default path is ./control/  
+--keygeneration          Set keygeneration for encrypting key area keys  
 --noromfs                Skip creating program romfs section  
 --nologo                 Skip creating program logo section  
 --plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
 ```
-Also check template folder for default folder structure, makefile and npdm json  
+Also check template folder for default folder structure, makefile, npdm json and other useful info  
   
 **Delete nca(hacbrewpack_nca) and temp(hacbrewpack_temp) folders before start or you may have bad nsp**
 

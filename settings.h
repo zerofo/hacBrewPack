@@ -51,6 +51,7 @@ typedef struct {
     uint8_t noromfs;
     uint8_t nologo;
     uint8_t plaintext;
+    int keygeneration;
 } hbp_settings_t;
 
 #endif

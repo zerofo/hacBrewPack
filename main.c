@@ -31,6 +31,7 @@ static void usage(void)
             "--romfsdir               Set program romfs directory path, default path is ." OS_PATH_SEPARATOR "romfs" OS_PATH_SEPARATOR "\n"
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
+            "--keygeneration          Set keygeneration for encrypting key area keys\n"
             "--noromfs                Skip creating program romfs section\n"
             "--nologo                 Skip creating program logo section\n"
             "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n",
@@ -81,6 +82,9 @@ int main(int argc, char **argv)
     // Default keyset filepath
     filepath_set(&keypath, "keys.dat");
 
+    // Default keygeneration
+    settings.keygeneration = 1;
+
     // Parse options
     while (1)
     {
@@ -100,6 +104,7 @@ int main(int argc, char **argv)
                 {"noromfs", 0, NULL, 8},
                 {"nologo", 0, NULL, 9},
                 {"plaintext", 0, NULL, 10},
+                {"keygeneration", 1, NULL, 11},
                 {NULL, 0, NULL, 0},
             };
 
@@ -145,6 +150,9 @@ int main(int argc, char **argv)
         case 10:
             settings.plaintext = 1;
             break;
+        case 11:
+            settings.keygeneration = atoi(optarg);
+            break;
         default:
             usage();
         }
@@ -172,6 +180,44 @@ int main(int argc, char **argv)
         fprintf(stderr, "Unable to open keyset '%s'\n"
                         "Use -k or --keyset to specify your keyset path or place your keyset in ." OS_PATH_SEPARATOR "keys.dat\n",
                 keypath.char_path);
+        return EXIT_FAILURE;
+    }
+
+    // Validating Keygeneration
+    if (settings.keygeneration < 1 || settings.keygeneration > 32)
+    {
+        fprintf(stderr, "Invalid keygeneration: %i, keygeneration range: 1-32\n", settings.keygeneration);
+        return EXIT_FAILURE;
+    }
+    // Make sure that key_area_key_application_keygen exists
+    uint8_t has_keygen_key = 0;
+    for (unsigned int i = 0; i < 0x10; i++)
+    {
+        if (settings.keyset.key_area_keys[settings.keygeneration - 1][0][i] != 0)
+        {
+            has_keygen_key = 1;
+            break;
+        }
+    }
+    if (has_keygen_key == 0)
+    {
+        fprintf(stderr, "Error: key_area_key_application for keygeneration %i is not present in keyset file\n", settings.keygeneration);
+        return EXIT_FAILURE;
+    }
+    
+    // Make sure that header_key exists
+    uint8_t has_header_Key = 0;
+    for (unsigned int i = 0; i < 0x10; i++)
+    {
+        if (settings.keyset.header_key[i] != 0)
+        {
+            has_header_Key = 1;
+            break;
+        }
+    }
+    if (has_header_Key == 0)
+    {
+        fprintf(stderr, "Error: header_key is not present in keyset file\n");
         return EXIT_FAILURE;
     }
 

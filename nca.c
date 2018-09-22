@@ -85,6 +85,7 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.sdk_minor = 12;
     nca_header.sdk_micro = 17;
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
+    nca_set_keygen(&nca_header, settings);
 
     nca_header.section_entries[0].media_start_offset = 0x6;                                          // 0xC00 / 0x200
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(control_nca_file) / 0x200); // Section end offset / 200
@@ -214,6 +215,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.sdk_minor = 12;
     nca_header.sdk_micro = 17;
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
+    nca_set_keygen(&nca_header, settings);
 
     nca_header.section_entries[0].media_start_offset = 0x6;                                          // 0xC00 / 0x200
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(program_nca_file) / 0x200); // Section end offset / 200
@@ -484,6 +486,7 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.sdk_minor = 12;
     nca_header.sdk_micro = 17;
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
+    nca_set_keygen(&nca_header, settings);
 
     nca_header.section_entries[0].media_start_offset = 0x6;                                       // 0xC00 / 0x200
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(meta_nca_file) / 0x200); // Section end offset / 200
@@ -621,7 +624,7 @@ void nca_calculate_section_hash(nca_fs_header_t *fs_header, uint8_t *out_section
 
 void nca_encrypt_key_area(nca_header_t *nca_header, hbp_settings_t *settings)
 {
-    aes_ctx_t *aes_ctx = new_aes_ctx(settings->keyset.key_area_keys[0][0], 16, AES_MODE_ECB);
+    aes_ctx_t *aes_ctx = new_aes_ctx(settings->keyset.key_area_keys[settings->keygeneration - 1][0], 16, AES_MODE_ECB);
     aes_encrypt(aes_ctx, nca_header->encrypted_keys, nca_header->encrypted_keys, 0x40);
     free_aes_ctx(aes_ctx);
 }
@@ -728,4 +731,18 @@ void nca_calculate_hash(FILE *nca_file, cnmt_ctx_t *cnmt_ctx, uint8_t cnmt_index
 
     free(buf);
     free_sha_ctx(sha_ctx);
+}
+
+void nca_set_keygen(nca_header_t *nca_header, hbp_settings_t *settings)
+{
+    if (settings->keygeneration != 1)
+    {
+        if (settings->keygeneration == 2)
+            nca_header->crypto_type = 0x2;
+        else
+        {
+            nca_header->crypto_type = 0x2;
+            nca_header->crypto_type2 = settings->keygeneration;
+        }
+    }
 }

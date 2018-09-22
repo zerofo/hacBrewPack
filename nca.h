@@ -124,5 +124,6 @@ void nca_encrypt_key_area(nca_header_t *nca_header, hbp_settings_t *settings);
 void nca_encrypt_header(nca_header_t *nca_header, hbp_settings_t *settings);
 void nca_encrypt_section(FILE *nca_file, nca_header_t *nca_header, uint8_t section_index);
 void nca_update_ctr(unsigned char *ctr, uint64_t ofs);
+void nca_set_keygen(nca_header_t *nca_header, hbp_settings_t *settings);
 
 #endif
