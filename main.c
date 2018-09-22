@@ -31,7 +31,7 @@ static void usage(void)
             "--romfsdir               Set program romfs directory path, default path is ." OS_PATH_SEPARATOR "romfs" OS_PATH_SEPARATOR "\n"
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
-            "--keygeneration          Set keygeneration for encrypting key area keys\n"
+            "--keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1\n"
             "--noromfs                Skip creating program romfs section\n"
             "--nologo                 Skip creating program logo section\n"
             "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n",
