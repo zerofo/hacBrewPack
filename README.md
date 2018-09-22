@@ -70,6 +70,6 @@ Also check template folder for default folder structure, makefile, npdm json and
 
 ## Licensing
 
-This software is licensed under the terms of the ISC License.  
-You can find a copy of the license in the LICENSES file.  
+This software is licensed under the terms of the GNU General Public License, version 2.  
+You can find a copy of the license in the LICENSE file.  
 Portions of project HacBrewPack are parts of other projects, make sure to check LICENSES folder
