@@ -32,7 +32,8 @@ static void usage(void)
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
             "--keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1\n"
-            "--sdkversion             Set SDK version, default SDK version is 0x000C1100\n"
+            "--keyareakey             Set key area key 2 in hex with 16 bytes lenght\n"
+            "--sdkversion             Set SDK version in hex, default SDK version is 000C1100\n"
             "--noromfs                Skip creating program romfs section\n"
             "--nologo                 Skip creating program logo section\n"
             "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n",
@@ -86,6 +87,8 @@ int main(int argc, char **argv)
     // Default Settings
     settings.keygeneration = 1;
     settings.sdk_version = 0x000C1100;
+    settings.keyareakey = (unsigned char*)calloc(1, 0x10);
+    memset(settings.keyareakey, 4, 0x10);
 
     // Parse options
     while (1)
@@ -108,6 +111,7 @@ int main(int argc, char **argv)
                 {"plaintext", 0, NULL, 10},
                 {"keygeneration", 1, NULL, 11},
                 {"sdkversion", 1, NULL, 12},
+                {"keyareakey", 1, NULL, 13},
                 {NULL, 0, NULL, 0},
             };
 
@@ -158,6 +162,9 @@ int main(int argc, char **argv)
             break;
         case 12:
             settings.sdk_version = strtoul(optarg, NULL, 16);
+            break;
+        case 13:
+            parse_hex_key(settings.keyareakey, optarg, 0x10);
             break;
         default:
             usage();
@@ -230,8 +237,8 @@ int main(int argc, char **argv)
     // Validating SDK Version
     if (settings.sdk_version < 0x000B0000 || settings.sdk_version > 0x00FFFFFF)
     {
-        fprintf(stderr, "Error: Invalid SDK version: 0x%08" PRIX32 "\n"
-                        "Valid SDK version range: 0x000B0000 - 0x00FFFFFF\n", settings.sdk_version);
+        fprintf(stderr, "Error: Invalid SDK version: %08" PRIX32 "\n"
+                        "Valid SDK version range: 000B0000 - 00FFFFFF\n", settings.sdk_version);
         exit(EXIT_FAILURE);
     }
 
@@ -268,6 +275,10 @@ int main(int argc, char **argv)
     else
         printf("Sections Crypto Type: Plaintext\n");
     printf("Keygeneration: %i\n", settings.keygeneration);
+    char keyareakey_hex[33];
+    hexBinaryString(settings.keyareakey, 16, keyareakey_hex, 33);
+    keyareakey_hex[32] = '\0';
+    printf("Key area key 2: %s\n", keyareakey_hex);
     if (settings.noromfs == 0)
         printf("Program NCA RomFS Section: Yes\n");
     else
@@ -277,5 +288,7 @@ int main(int argc, char **argv)
     else
         printf("Program NCA Logo Section: No\n");
     printf("Created NSP: %s\n", nsp_file_path.char_path);
+
+    free(settings.keyareakey);
     return EXIT_SUCCESS;
 }

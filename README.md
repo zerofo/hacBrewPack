@@ -20,8 +20,8 @@ key_area_key_application_xx | Application key area encryption keys
 
 ### Compiling Homebrew
 You need to compile homebrew with proper Makefile, you can use the one in template folder  
-You must use valid lower-case TitleID in Makefile and npdm.json. Valid TitleID range is: 0x0100000000000000 - 0x01ffffffffffffff  
-Both TitleIDs in Makefile and npdm.json must be the same  
+You must use valid lower-case titleid in Makefile and npdm.json. Valid titleid range is: 0x0100000000000000 - 0x01ffffffffffffff  
+Both titleids in Makefile and npdm.json must be the same  
 Compiled homebrew must have following files:  
 ```
 build\exefs\main  
@@ -59,11 +59,14 @@ Options:
 --logodir                Set program logo directory path, default path is ./logo/  
 --controldir             Set control romfs directory path, default path is ./control/  
 --keygeneration          Set keygeneration for encrypting key area keys  
+--keyareakey             Set Set key area key 2 in hex with 16 bytes lenght  
+--sdkversion             Set SDK version in hex, default SDK version is 000C1100  
 --noromfs                Skip creating program romfs section  
 --nologo                 Skip creating program logo section  
 --plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
 ```
-Also check template folder for default folder structure, makefile, npdm json and other useful info  
+HacBrewPack doesn't need any options to work. if you follow folder structure properly, you can just run the program and it'll make NSP  
+Check template folder for default folder structure, Makefile, npdm json and other useful info  
   
 **Delete nca(hacbrewpack_nca) and temp(hacbrewpack_temp) folders before start or you may have a bad nsp**
 

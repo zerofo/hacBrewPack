@@ -52,7 +52,7 @@ void nacp_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     if (cnmt_ctx->cnmt_header.title_id < 0x0100000000000000 || cnmt_ctx->cnmt_header.title_id > 0x01ffffffffffffff)
     {
         fprintf(stderr, "Error: Bad TitleID found in control.nacp: 0x%016" PRIx64 "\n"
-                        "Valid TitleID range: 0x0100000000000000 - 0x01ffffffffffffff\n", cnmt_ctx->cnmt_header.title_id);
+                        "Valid TitleID range: 0100000000000000 - 01ffffffffffffff\n", cnmt_ctx->cnmt_header.title_id);
         exit(EXIT_FAILURE);
     }
 

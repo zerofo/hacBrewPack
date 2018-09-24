@@ -1,3 +1,8 @@
+v1.10
+Added sdkverison option
+Added keyareakey option
+Added summary
+
 v1.00
 Added keygeneration option
 

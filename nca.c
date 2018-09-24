@@ -111,7 +111,7 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     printf("\n---> Finalizing:\n");
 
     // Set encrypted key area key 2
-    memset(nca_header.encrypted_keys[2], 4, 0x10);
+    memcpy(nca_header.encrypted_keys[2], settings->keyareakey, 0x10);
 
     printf("===> Encrypting NCA\n");
     if (settings->plaintext == 0)
@@ -364,7 +364,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     printf("\n---> Finalizing:\n");
 
     // Set encrypted key area key 2
-    memset(nca_header.encrypted_keys[2], 4, 0x10);
+    memcpy(nca_header.encrypted_keys[2], settings->keyareakey, 0x10);
 
     printf("===> Encrypting NCA\n");
     // Encrypt sections
@@ -509,7 +509,7 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     printf("\n---> Finalizing:\n");
 
     // Set encrypted key area key 2
-    memset(nca_header.encrypted_keys[2], 4, 0x10);
+    memcpy(nca_header.encrypted_keys[2], settings->keyareakey, 0x10);
 
     printf("===> Encrypting NCA\n");
     if (settings->plaintext == 0)

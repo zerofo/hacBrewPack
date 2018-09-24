@@ -14,6 +14,7 @@ Default folders structure:
 ```
 hacbrewpack
 |   hackbrewpack(.exe)
+|   keys.dat
 |
 |___exefs
 |   |   main

@@ -53,6 +53,7 @@ typedef struct
     uint8_t noromfs;
     uint8_t nologo;
     uint8_t plaintext;
+    unsigned char *keyareakey;
     int keygeneration;
     union {
         uint32_t sdk_version; /* What SDK was this built with? */
