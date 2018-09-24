@@ -3,7 +3,6 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 hacBrewPack is a tool for creating Nintendo Switch NCAs (Nintendo Content Archive) from homebrews and pack them into NSPs (Nintendo Submission Package)  
-hacBrewPack is WIP and it's at very early stages  
   
 Thanks: SciresM, yellows8, Adubbz, SwitchBrew
 
@@ -20,7 +19,7 @@ header_key | NCA Header Key
 key_area_key_application_xx | Application key area encryption keys
 
 ### Compiling Homebrew
-You need to compile homebrew with proper makefile, you can use the one in template folder  
+You need to compile homebrew with proper Makefile, you can use the one in template folder  
 You must use valid lower-case TitleID in Makefile and npdm.json. Valid TitleID range is: 0x0100000000000000 - 0x01ffffffffffffff  
 Both TitleIDs in Makefile and npdm.json must be the same  
 Compiled homebrew must have following files:  
@@ -36,14 +35,14 @@ You must rename created nacp file to 'control.nacp' and place it in control fold
 You should place your icon with "icon_{Language}.dat" file name in control folder, "icon_AmericanEnglish.dat" is the default one if you don't manually edit your nacp. dat files are just renamed jpg files  
 Check [switchbrew](http://switchbrew.org/index.php/Settings_services#LanguageCode) for more info about language names  
 Your icon file format must be JPEG with 256x256 dimensions  
-It's highly recomended to delete unnecessary exif data from your jpeg file (easy way: Open icon with GIMP or Paint, save as bmp, Open it again and save as jpeg)  
+It's highly recomended to delete unnecessary exif data from your jpeg file (easy way: Open icon with GIMP or Paint, save as bmp, Open it again and save as jpg)  
 If you see placeholder instead of icon after installing nsp, It's likely due to exif data  
 If you have some exif data that horizon os doesn't like (like Camera Brand), Your app may leave in installing state in qlaunch  
-If you don't put your icon in control folder, you'll see a general icon after installing nsp (i don't recommend this)  
+If you don't put your icon in control folder, you'll see a general icon after installing nsp (I don't recommend this)  
 ### Logo
-"logo" folder should contain "NintendoLogo.png" and "StartupMovie.gif", they'll appear when the app is loading  
-Both files are not licensed according to [switchbrew](http://switchbrew.org/index.php/NCA_Content_FS) but i didn't include them anyway, You can also replace these files with custom ones  
-You can use --nologo if you don't have any custom logo and you don't have the original ones, as the result switch will show a black screen without nintendo logo at top left and switch animation on bottom right  
+"logo" folder should contain "NintendoLogo.png" and "StartupMovie.gif". They'll appear when the app is loading  
+Both files are not licensed according to [switchbrew](http://switchbrew.org/index.php/NCA_Content_FS) but i didn't include them anyway. You can also replace these files with custom ones  
+You can use --nologo if you don't have any custom logos and you don't have the original ones, as the result switch will show a black screen without nintendo logo at top left and switch animation on bottom right  
 ### CLI Options:  
 ```
 *nix: ./hacbrewpack [options...]  
@@ -66,7 +65,7 @@ Options:
 ```
 Also check template folder for default folder structure, makefile, npdm json and other useful info  
   
-**Delete nca(hacbrewpack_nca) and temp(hacbrewpack_temp) folders before start or you may have bad nsp**
+**Delete nca(hacbrewpack_nca) and temp(hacbrewpack_temp) folders before start or you may have a bad nsp**
 
 ## Licensing
 

@@ -5,12 +5,12 @@
 Generic 'Makefile' that you can use to compile homebrews  
 
 ### npdm.json:
-Generic NPDM json file which libnx reads during compiling of your homebrew and makes npdm from it  
-It needs to be heavily modified based on your app  
+Generic NPDM json file which libnx reads during compile and makes npdm from it  
+It needs to be modified based on your app  
 Check switchbrew for more information: [http://switchbrew.org/index.php/NPDM](http://switchbrew.org/index.php/NPDM)
 
 ### Folder structure:
-Default folder structure:
+Default folders structure:
 ```
 hacbrewpack
 |   hackbrewpack(.exe)
@@ -31,7 +31,7 @@ hacbrewpack
 ```
 
 You can skip creating program romfs with --noromfs and creating program logo with --nologo  
-You can use options to change default folder paths and names  
+You can use options to change default folders paths  
   
 Default output folders are:  
 hacbrewpack_out: contains nsp  
