@@ -52,6 +52,7 @@ typedef struct {
     uint8_t nologo;
     uint8_t plaintext;
     int keygeneration;
+    uint32_t sdk_verison;
 } hbp_settings_t;
 
 #endif

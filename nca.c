@@ -82,8 +82,7 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Common values
     nca_header.magic = MAGIC_NCA3;
     nca_header.content_type = 0x2; // Control
-    nca_header.sdk_minor = 12;
-    nca_header.sdk_micro = 17;
+    nca_header.sdk_version = settings->sdk_verison;
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
     nca_set_keygen(&nca_header, settings);
 
@@ -212,8 +211,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Common values
     nca_header.magic = MAGIC_NCA3;
     nca_header.content_type = 0x0; // Program
-    nca_header.sdk_minor = 12;
-    nca_header.sdk_micro = 17;
+    nca_header.sdk_version = settings->sdk_verison;
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
     nca_set_keygen(&nca_header, settings);
 
@@ -483,8 +481,7 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Common values
     nca_header.magic = MAGIC_NCA3;
     nca_header.content_type = 0x1; // Meta
-    nca_header.sdk_minor = 12;
-    nca_header.sdk_micro = 17;
+    nca_header.sdk_version = settings->sdk_verison;
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
     nca_set_keygen(&nca_header, settings);
 

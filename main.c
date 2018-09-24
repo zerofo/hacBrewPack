@@ -32,6 +32,7 @@ static void usage(void)
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
             "--keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1\n"
+            "--sdkversion             Set SDK version, default SDK version is 0x000C1100\n"
             "--noromfs                Skip creating program romfs section\n"
             "--nologo                 Skip creating program logo section\n"
             "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n",
@@ -82,8 +83,9 @@ int main(int argc, char **argv)
     // Default keyset filepath
     filepath_set(&keypath, "keys.dat");
 
-    // Default keygeneration
+    // Default Settings
     settings.keygeneration = 1;
+    settings.sdk_verison = 0x000C1100;
 
     // Parse options
     while (1)
@@ -105,6 +107,7 @@ int main(int argc, char **argv)
                 {"nologo", 0, NULL, 9},
                 {"plaintext", 0, NULL, 10},
                 {"keygeneration", 1, NULL, 11},
+                {"sdkversion", 1, NULL, 12},
                 {NULL, 0, NULL, 0},
             };
 
@@ -152,6 +155,9 @@ int main(int argc, char **argv)
             break;
         case 11:
             settings.keygeneration = atoi(optarg);
+            break;
+        case 12:
+            settings.sdk_verison = strtoul(optarg, NULL, 16);
             break;
         default:
             usage();
@@ -219,6 +225,14 @@ int main(int argc, char **argv)
     {
         fprintf(stderr, "Error: header_key is not present in keyset file\n");
         return EXIT_FAILURE;
+    }
+
+    // Validating SDK Version
+    if (settings.sdk_verison < 0x000B0000 || settings.sdk_verison > 0x00FFFFFF)
+    {
+        fprintf(stderr, "Error: Invalid SDK version: 0x%08" PRIX32 "\n"
+                        "Valid SDK version range: 0x000B0000 - 0x00FFFFFF\n", settings.sdk_verison);
+        exit(EXIT_FAILURE);
     }
 
     // Get TitleID from NACP
