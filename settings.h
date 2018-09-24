@@ -6,13 +6,14 @@
 #include "types.h"
 #include "filepath.h"
 
-typedef struct {
+typedef struct
+{
     unsigned char secure_boot_key[0x10];                 /* Secure boot key for use in key derivation. NOTE: CONSOLE UNIQUE. */
     unsigned char tsec_key[0x10];                        /* TSEC key for use in key derivation. NOTE: CONSOLE UNIQUE. */
     unsigned char keyblob_keys[0x20][0x10];              /* Actual keys used to decrypt keyblobs. NOTE: CONSOLE UNIQUE.*/
-    unsigned char keyblob_mac_keys[0x20][0x10];          /* Keys used to validate keyblobs. NOTE: CONSOLE UNIQUE. */ 
-    unsigned char encrypted_keyblobs[0x20][0xB0];        /* Actual encrypted keyblobs (EKS). NOTE: CONSOLE UNIQUE. */ 
-    unsigned char keyblobs[0x20][0x90];                  /* Actual decrypted keyblobs (EKS). */ 
+    unsigned char keyblob_mac_keys[0x20][0x10];          /* Keys used to validate keyblobs. NOTE: CONSOLE UNIQUE. */
+    unsigned char encrypted_keyblobs[0x20][0xB0];        /* Actual encrypted keyblobs (EKS). NOTE: CONSOLE UNIQUE. */
+    unsigned char keyblobs[0x20][0x90];                  /* Actual decrypted keyblobs (EKS). */
     unsigned char keyblob_key_sources[0x20][0x10];       /* Seeds for keyblob keys. */
     unsigned char keyblob_mac_key_source[0x10];          /* Seed for keyblob MAC key derivation. */
     unsigned char master_key_source[0x10];               /* Seed for master key derivation. */
@@ -34,12 +35,13 @@ typedef struct {
     unsigned char titlekeks[0x20][0x10];                 /* Title key encryption keys. */
     unsigned char key_area_keys[0x20][3][0x10];          /* Key area encryption keys. */
     unsigned char sd_card_keys[2][0x20];
-    unsigned char nca_hdr_fixed_key_modulus[0x100];      /* NCA header fixed key RSA pubk. */
-    unsigned char acid_fixed_key_modulus[0x100];         /* ACID fixed key RSA pubk. */
-    unsigned char package2_fixed_key_modulus[0x100];     /* Package2 Header RSA pubk. */
+    unsigned char nca_hdr_fixed_key_modulus[0x100];  /* NCA header fixed key RSA pubk. */
+    unsigned char acid_fixed_key_modulus[0x100];     /* ACID fixed key RSA pubk. */
+    unsigned char package2_fixed_key_modulus[0x100]; /* Package2 Header RSA pubk. */
 } hbp_keyset_t;
 
-typedef struct {
+typedef struct
+{
     hbp_keyset_t keyset;
     filepath_t temp_dir;
     filepath_t out_dir;
@@ -52,7 +54,16 @@ typedef struct {
     uint8_t nologo;
     uint8_t plaintext;
     int keygeneration;
-    uint32_t sdk_verison;
+    union {
+        uint32_t sdk_version; /* What SDK was this built with? */
+        struct
+        {
+            uint8_t sdk_revision;
+            uint8_t sdk_micro;
+            uint8_t sdk_minor;
+            uint8_t sdk_major;
+        };
+    };
 } hbp_settings_t;
 
 #endif

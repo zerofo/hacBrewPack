@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 
     // Default Settings
     settings.keygeneration = 1;
-    settings.sdk_verison = 0x000C1100;
+    settings.sdk_version = 0x000C1100;
 
     // Parse options
     while (1)
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
             settings.keygeneration = atoi(optarg);
             break;
         case 12:
-            settings.sdk_verison = strtoul(optarg, NULL, 16);
+            settings.sdk_version = strtoul(optarg, NULL, 16);
             break;
         default:
             usage();
@@ -228,10 +228,10 @@ int main(int argc, char **argv)
     }
 
     // Validating SDK Version
-    if (settings.sdk_verison < 0x000B0000 || settings.sdk_verison > 0x00FFFFFF)
+    if (settings.sdk_version < 0x000B0000 || settings.sdk_version > 0x00FFFFFF)
     {
         fprintf(stderr, "Error: Invalid SDK version: 0x%08" PRIX32 "\n"
-                        "Valid SDK version range: 0x000B0000 - 0x00FFFFFF\n", settings.sdk_verison);
+                        "Valid SDK version range: 0x000B0000 - 0x00FFFFFF\n", settings.sdk_version);
         exit(EXIT_FAILURE);
     }
 
@@ -258,5 +258,24 @@ int main(int argc, char **argv)
     pfs0_build(&settings.out_dir, &nsp_file_path, &pfs0_size);
     printf("\n----> Created NSP: %s\n", nsp_file_path.char_path);
 
+    // Summary
+    printf("\n\n");
+    printf("Summary:\n\n");
+    printf("Title ID: %016" PRIx64 "\n", cnmt_ctx.cnmt_header.title_id);
+    printf("SDK Version: %" PRId8 ".%" PRId8".%" PRId8 ".%" PRId8 "\n", settings.sdk_major, settings.sdk_minor, settings.sdk_micro, settings.sdk_revision);
+    if (settings.plaintext == 0)
+        printf("Section Crypto Type: Regular Crypto\n");
+    else
+        printf("Sections Crypto Type: Plaintext\n");
+    printf("Keygeneration: %i\n", settings.keygeneration);
+    if (settings.noromfs == 0)
+        printf("Program NCA RomFS Section: Yes\n");
+    else
+        printf("Program NCA RomFS Section: No\n");
+    if (settings.nologo == 0)
+        printf("Program NCA Logo Section: Yes\n");
+    else
+        printf("Program NCA Logo Section: No\n");
+    printf("Created NSP: %s\n", nsp_file_path.char_path);
     return EXIT_SUCCESS;
 }

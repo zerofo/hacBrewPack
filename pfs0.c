@@ -67,8 +67,7 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
 		if(stat(objpath, &objstats)==-1)
 		{
 			printf("Failed to stat: %s\n", objpath);
-			ret = 2;
-			break;
+            exit(EXIT_FAILURE);
 		}
 
 		if((objstats.st_mode & S_IFMT) == S_IFDIR)//directory
@@ -80,8 +79,7 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
 			if(objcount>=MAX_FS_ENTRIES)
 			{
 				printf("Maximum fs object count already reached.\n");
-				ret = 3;
-				break;
+                exit(EXIT_FAILURE);
 			}
 
 			fsentry = &fsentries[objcount];
@@ -95,8 +93,7 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
 			if(stringtable_offset+tmplen > sizeof(stringtable))
 			{
 				printf("Max size of stringtable reached.\n");
-				ret = 4;
-				break;
+                exit(EXIT_FAILURE);
 			}
 
 			strncpy(&stringtable[stringtable_offset], cur_dirent->d_name, sizeof(stringtable)-stringtable_offset);
@@ -107,8 +104,7 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
 		else
 		{
 			printf("Invalid FS object type.\n");
-			ret = 14;
-			break;
+            exit(EXIT_FAILURE);
 		}
 	}
 
