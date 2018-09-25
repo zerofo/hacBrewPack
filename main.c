@@ -12,8 +12,7 @@
 #include "cnmt.h"
 #include "pfs0.h"
 
-/* 4NXCI by The-4n
-   Based on hactool by SciresM
+/* hacBrewPack by The-4n
    */
 
 // Print Usage
