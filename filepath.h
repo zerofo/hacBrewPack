@@ -1,5 +1,5 @@
-#ifndef NXCI_FILEPATH_H
-#define NXCI_FILEPATH_H
+#ifndef HACBREWPACK_FILEPATH_H
+#define HACBREWPACK_FILEPATH_H
 
 #include "types.h"
 #include <dirent.h>
