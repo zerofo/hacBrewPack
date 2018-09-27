@@ -40,7 +40,8 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
     filepath_t in_dirpath_cpy;
     filepath_init(&in_dirpath_cpy);
     filepath_copy(&in_dirpath_cpy, in_dirpath);
-    filepath_append(&in_dirpath_cpy, "");
+    if (strcmp(&in_dirpath_cpy.char_path[strlen(in_dirpath_cpy.char_path) - 1], OS_PATH_SEPARATOR) != 0)
+        filepath_append(&in_dirpath_cpy, "");
 
 	dir = opendir(in_dirpath_cpy.char_path);
 	if(dir==NULL)
