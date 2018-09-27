@@ -34,7 +34,6 @@ typedef struct {
 } ivfc_hdr_t;
 #pragma pack(pop)
 
-void ivfc_create_level6(filepath_t *dst_level_file, filepath_t *romfs_file, uint64_t *out_size);
 void ivfc_create_level(filepath_t *dst_level_file, filepath_t *src_level_file, uint64_t *out_size);
 void ivfc_calculate_master_hash(filepath_t *ivfc_level1_filepath ,uint8_t *out_master_hash);
 

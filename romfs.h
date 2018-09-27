@@ -84,6 +84,6 @@ typedef struct {
 } romfs_superblock_t;
 #pragma pack(pop)
 
-size_t romfs_build(filepath_t *in_dirpath, filepath_t *out_romfspath);
+size_t romfs_build(filepath_t *in_dirpath, filepath_t *out_romfspath, uint64_t *out_size);
 
 #endif

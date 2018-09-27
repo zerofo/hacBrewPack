@@ -34,14 +34,6 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     printf("\n---> Creating Section 0:");
 
-    //Build RomFS
-    filepath_t romfs_control;
-    filepath_init(&romfs_control);
-    filepath_copy(&romfs_control, &settings->temp_dir);
-    filepath_append(&romfs_control, "control_sec0_romfs");
-    printf("\n===> Building RomFS\n");
-    romfs_build(&settings->control_romfs_dir, &romfs_control);
-
     // Set IVFC levels temp filepaths
     filepath_t ivfc_lvls_path[6];
     for (int a = 0; a < 6; a++)
@@ -51,11 +43,13 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         filepath_append(&ivfc_lvls_path[a], "control_sec0_ivfc_lvl%i", a + 1);
     }
 
+    //Build RomFS
+    printf("\n===> Building RomFS\n");
+    romfs_build(&settings->control_romfs_dir, &ivfc_lvls_path[5], &nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[5].hash_data_size);
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[5].block_size = 0x0E; // 0x4000
+
     // Create IVFC levels
     printf("\n===> Creating IVFC levels\n");
-    printf("Writing %s\n", ivfc_lvls_path[5].char_path);
-    ivfc_create_level6(&ivfc_lvls_path[5], &romfs_control, &nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[5].hash_data_size);
-    nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[5].block_size = 0x0E; // 0x4000
     for (int b = 4; b >= 0; b--)
     {
         printf("Writing %s\n", ivfc_lvls_path[b].char_path);
@@ -241,14 +235,6 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
         printf("\n---> Creating Section 1:");
 
-        //Build RomFS
-        filepath_t romfs_program;
-        filepath_init(&romfs_program);
-        filepath_copy(&romfs_program, &settings->temp_dir);
-        filepath_append(&romfs_program, "program_sec1_romfs");
-        printf("\n===> Building RomFS\n");
-        romfs_build(&settings->romfs_dir, &romfs_program);
-
         // Set IVFC levels temp filepaths
         filepath_t ivfc_lvls_path[6];
         for (int a = 0; a < 6; a++)
@@ -258,11 +244,13 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
             filepath_append(&ivfc_lvls_path[a], "program_sec1_ivfc_lvl%i", a + 1);
         }
 
+        //Build RomFS
+        printf("\n===> Building RomFS\n");
+        romfs_build(&settings->romfs_dir, &ivfc_lvls_path[5], &nca_header.fs_headers[1].romfs_superblock.ivfc_header.level_headers[5].hash_data_size);
+        nca_header.fs_headers[1].romfs_superblock.ivfc_header.level_headers[5].block_size = 0x0E; // 0x4000
+
         // Create IVFC levels
         printf("\n===> Creating IVFC levels\n");
-        printf("Writing %s\n", ivfc_lvls_path[5].char_path);
-        ivfc_create_level6(&ivfc_lvls_path[5], &romfs_program, &nca_header.fs_headers[1].romfs_superblock.ivfc_header.level_headers[5].hash_data_size);
-        nca_header.fs_headers[1].romfs_superblock.ivfc_header.level_headers[5].block_size = 0x0E; // 0x4000
         for (int b = 4; b >= 0; b--)
         {
             printf("Writing %s\n", ivfc_lvls_path[b].char_path);
