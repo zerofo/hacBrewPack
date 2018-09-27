@@ -35,7 +35,7 @@ You must rename created nacp file to 'control.nacp' and place it in control fold
 You should place your icon with "icon_{Language}.dat" file name in control folder, "icon_AmericanEnglish.dat" is the default one if you don't manually edit your nacp. dat files are just renamed jpg files  
 Check [switchbrew](http://switchbrew.org/index.php/Settings_services#LanguageCode) for more info about language names  
 Your icon file format must be JPEG with 256x256 dimensions  
-It's highly recomended to delete unnecessary exif data from your jpeg file (easy way: Open icon with GIMP or Paint, save as bmp, Open it again and save as jpg)  
+It's highly recommended to delete unnecessary exif data from your jpeg file (easy way: Open icon with GIMP or Paint, save as bmp, Open it again and save as jpg)  
 If you see placeholder instead of icon after installing nsp, It's likely due to exif data  
 If you have some exif data that horizon os doesn't like (like Camera Brand), Your app may leave in installing state in qlaunch  
 If you don't put your icon in control folder, you'll see a general icon after installing nsp (I don't recommend this)  
