@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     // Default Settings
     settings.keygeneration = 1;
     settings.sdk_version = 0x000C1100;
-    settings.keyareakey = (unsigned char*)calloc(1, 0x10);
+    settings.keyareakey = (unsigned char *)calloc(1, 0x10);
     memset(settings.keyareakey, 4, 0x10);
 
     // Parse options
@@ -158,9 +158,23 @@ int main(int argc, char **argv)
             break;
         case 11:
             settings.keygeneration = atoi(optarg);
+            // Validating Keygeneration
+            if (settings.keygeneration < 1 || settings.keygeneration > 32)
+            {
+                fprintf(stderr, "Invalid keygeneration: %i, keygeneration range: 1-32\n", settings.keygeneration);
+                return EXIT_FAILURE;
+            }
             break;
         case 12:
             settings.sdk_version = strtoul(optarg, NULL, 16);
+            // Validating SDK Version
+            if (settings.sdk_version < 0x000B0000 || settings.sdk_version > 0x00FFFFFF)
+            {
+                fprintf(stderr, "Error: Invalid SDK version: %08" PRIX32 "\n"
+                                "Valid SDK version range: 000B0000 - 00FFFFFF\n",
+                        settings.sdk_version);
+                exit(EXIT_FAILURE);
+            }
             break;
         case 13:
             parse_hex_key(settings.keyareakey, optarg, 0x10);
@@ -195,12 +209,6 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    // Validating Keygeneration
-    if (settings.keygeneration < 1 || settings.keygeneration > 32)
-    {
-        fprintf(stderr, "Invalid keygeneration: %i, keygeneration range: 1-32\n", settings.keygeneration);
-        return EXIT_FAILURE;
-    }
     // Make sure that key_area_key_application_keygen exists
     uint8_t has_keygen_key = 0;
     for (unsigned int i = 0; i < 0x10; i++)
@@ -216,7 +224,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "Error: key_area_key_application for keygeneration %i is not present in keyset file\n", settings.keygeneration);
         return EXIT_FAILURE;
     }
-    
+
     // Make sure that header_key exists
     uint8_t has_header_Key = 0;
     for (unsigned int i = 0; i < 0x10; i++)
@@ -231,14 +239,6 @@ int main(int argc, char **argv)
     {
         fprintf(stderr, "Error: header_key is not present in keyset file\n");
         return EXIT_FAILURE;
-    }
-
-    // Validating SDK Version
-    if (settings.sdk_version < 0x000B0000 || settings.sdk_version > 0x00FFFFFF)
-    {
-        fprintf(stderr, "Error: Invalid SDK version: %08" PRIX32 "\n"
-                        "Valid SDK version range: 000B0000 - 00FFFFFF\n", settings.sdk_version);
-        exit(EXIT_FAILURE);
     }
 
     // Get TitleID from NACP
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
     printf("\n\n");
     printf("Summary:\n\n");
     printf("Title ID: %016" PRIx64 "\n", cnmt_ctx.cnmt_header.title_id);
-    printf("SDK Version: %" PRId8 ".%" PRId8".%" PRId8 ".%" PRId8 "\n", settings.sdk_major, settings.sdk_minor, settings.sdk_micro, settings.sdk_revision);
+    printf("SDK Version: %" PRId8 ".%" PRId8 ".%" PRId8 ".%" PRId8 "\n", settings.sdk_major, settings.sdk_minor, settings.sdk_micro, settings.sdk_revision);
     if (settings.plaintext == 0)
         printf("Section Crypto Type: Regular Crypto\n");
     else

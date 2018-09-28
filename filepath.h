@@ -71,6 +71,4 @@ void filepath_os_append(filepath_t *fpath, oschar_t *path);
 void filepath_set(filepath_t *fpath, const char *path);
 oschar_t *filepath_get(filepath_t *fpath);
 
-
-
 #endif
