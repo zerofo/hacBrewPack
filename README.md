@@ -68,8 +68,6 @@ Options:
 ```
 HacBrewPack doesn't need any options to work. if you follow folder structure properly, you can just run the program and it'll make NSP  
 Check template folder for default folder structure, Makefile, npdm json and other useful info  
-  
-**Delete nca(hacbrewpack_nca) and temp(hacbrewpack_temp) folders before start or you may have a bad nsp**
 
 ## Licensing
 
