@@ -35,7 +35,8 @@ static void usage(void)
             "--sdkversion             Set SDK version in hex, default SDK version is 000C1100\n"
             "--noromfs                Skip creating program romfs section\n"
             "--nologo                 Skip creating program logo section\n"
-            "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n",
+            "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n"
+            "--keepncadir             Keep NCA directory\n",
             USAGE_PROGRAM_NAME);
     exit(EXIT_FAILURE);
 }
@@ -47,17 +48,17 @@ int main(int argc, char **argv)
     memset(&settings, 0, sizeof(settings));
     memset(&cnmt_ctx, 0, sizeof(cnmt_ctx));
 
-    printf("hacBrewPack %s by The-4n\n", HACBREWPACK_VERSION);
+    printf("hacBrewPack %s by The-4n\n\n", HACBREWPACK_VERSION);
 
     // Hardcode temp directory and create it
     filepath_init(&settings.temp_dir);
     filepath_set(&settings.temp_dir, "hacbrewpack_temp");
 
-    // Hardcode output directory and create it
-    filepath_init(&settings.out_dir);
-    filepath_set(&settings.out_dir, "hacbrewpack_nca");
+    // Hardcode output nca directory and create it
+    filepath_init(&settings.nca_dir);
+    filepath_set(&settings.nca_dir, "hacbrewpack_nca");
 
-    // Hardcode nsp  directory and create it
+    // Hardcode output nsp directory and create it
     filepath_init(&settings.nsp_dir);
     filepath_set(&settings.nsp_dir, "hacbrewpack_nsp");
 
@@ -111,6 +112,7 @@ int main(int argc, char **argv)
                 {"keygeneration", 1, NULL, 11},
                 {"sdkversion", 1, NULL, 12},
                 {"keyareakey", 1, NULL, 13},
+                {"keepncadir", 0, NULL, 14},
                 {NULL, 0, NULL, 0},
             };
 
@@ -130,7 +132,7 @@ int main(int argc, char **argv)
             filepath_set(&settings.temp_dir, optarg);
             break;
         case 2:
-            filepath_set(&settings.out_dir, optarg);
+            filepath_set(&settings.nca_dir, optarg);
             break;
         case 3:
             filepath_set(&settings.nsp_dir, optarg);
@@ -179,16 +181,21 @@ int main(int argc, char **argv)
         case 13:
             parse_hex_key(settings.keyareakey, optarg, 0x10);
             break;
+        case 14:
+            settings.keepncadir = 1;
+            break;
         default:
             usage();
         }
     }
 
-    // Create directories
-    os_rmdir(settings.temp_dir.os_path);
+    // Remove existing temp and nca directories and Create new ones + nsp directory
+    printf("Removing existing temp and nca directories\n");
+    filepath_remove_directory(&settings.temp_dir);
+    filepath_remove_directory(&settings.nca_dir);
+    printf("Creating temp, nca and nsp directories\n");
     os_makedir(settings.temp_dir.os_path);
-    os_rmdir(settings.out_dir.os_path);
-    os_makedir(settings.out_dir.os_path);
+    os_makedir(settings.nca_dir.os_path);
     os_makedir(settings.nsp_dir.os_path);
 
     // Try to populate default keyfile.
@@ -242,6 +249,7 @@ int main(int argc, char **argv)
     }
 
     // Get TitleID from NACP
+    printf("\n");
     printf("----> Process NACP\n");
     nacp_process(&settings, &cnmt_ctx);
     printf("\n");
@@ -261,8 +269,22 @@ int main(int argc, char **argv)
     filepath_copy(&nsp_file_path, &settings.nsp_dir);
     filepath_append(&nsp_file_path, "%016" PRIx64 ".nsp", cnmt_ctx.cnmt_header.title_id);
     uint64_t pfs0_size;
-    pfs0_build(&settings.out_dir, &nsp_file_path, &pfs0_size);
+    pfs0_build(&settings.nca_dir, &nsp_file_path, &pfs0_size);
     printf("\n----> Created NSP: %s\n", nsp_file_path.char_path);
+
+    // Remove temp and nca directories
+    printf("\n");
+    if (settings.keepncadir == 1)
+    {
+        printf("Removing created temp directory\n");
+        filepath_remove_directory(&settings.temp_dir);
+    }
+    else
+    {
+        printf("Removing created temp and nca directories\n");
+        filepath_remove_directory(&settings.temp_dir);
+        filepath_remove_directory(&settings.nca_dir);
+    }
 
     // Summary
     printf("\n\n");

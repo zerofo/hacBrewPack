@@ -64,6 +64,7 @@ Options:
 --noromfs                Skip creating program romfs section  
 --nologo                 Skip creating program logo section  
 --plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
+--keepncadir             Keep NCA directory  
 ```
 HacBrewPack doesn't need any options to work. if you follow folder structure properly, you can just run the program and it'll make NSP  
 Check template folder for default folder structure, Makefile, npdm json and other useful info  

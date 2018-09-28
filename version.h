@@ -7,6 +7,6 @@
     #define USAGE_PROGRAM_NAME "hackbrewpack"
 #endif
 
-#define HACBREWPACK_VERSION "v1.10"
+#define HACBREWPACK_VERSION "v1.15"
 
 #endif

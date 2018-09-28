@@ -16,7 +16,7 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     filepath_t control_nca_path;
     filepath_init(&control_nca_path);
-    filepath_copy(&control_nca_path, &settings->out_dir);
+    filepath_copy(&control_nca_path, &settings->nca_dir);
     filepath_append(&control_nca_path, "control.nca");
 
     FILE *control_nca_file;
@@ -140,7 +140,7 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Rename control.nca to ncaid.nca
     filepath_t control_nca_final_path;
     filepath_init(&control_nca_final_path);
-    filepath_copy(&control_nca_final_path, &settings->out_dir);
+    filepath_copy(&control_nca_final_path, &settings->nca_dir);
     char control_nca_name[37];
     hexBinaryString(cnmt_ctx->cnmt_content_records[1].ncaid, 16, control_nca_name, 33);
     strcat(control_nca_name, ".nca");
@@ -160,7 +160,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     filepath_t program_nca_path;
     filepath_init(&program_nca_path);
-    filepath_copy(&program_nca_path, &settings->out_dir);
+    filepath_copy(&program_nca_path, &settings->nca_dir);
     filepath_append(&program_nca_path, "program.nca");
 
     FILE *program_nca_file;
@@ -392,7 +392,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Rename control.nca to ncaid.nca
     filepath_t program_nca_final_path;
     filepath_init(&program_nca_final_path);
-    filepath_copy(&program_nca_final_path, &settings->out_dir);
+    filepath_copy(&program_nca_final_path, &settings->nca_dir);
     char program_nca_name[37];
     hexBinaryString(cnmt_ctx->cnmt_content_records[0].ncaid, 16, program_nca_name, 33);
     strcat(program_nca_name, ".nca");
@@ -412,7 +412,7 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     filepath_t meta_nca_path;
     filepath_init(&meta_nca_path);
-    filepath_copy(&meta_nca_path, &settings->out_dir);
+    filepath_copy(&meta_nca_path, &settings->nca_dir);
     filepath_append(&meta_nca_path, "meta.nca");
 
     FILE *meta_nca_file;
@@ -532,7 +532,7 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Rename meta.nca to ncaid.cnmt.nca
     filepath_t meta_nca_final_path;
     filepath_init(&meta_nca_final_path);
-    filepath_copy(&meta_nca_final_path, &settings->out_dir);
+    filepath_copy(&meta_nca_final_path, &settings->nca_dir);
     char meta_nca_name[42];
     hexBinaryString(cnmt_ctx->cnmt_content_records[2].ncaid, 16, meta_nca_name, 33);
     strcat(meta_nca_name, ".cnmt.nca");

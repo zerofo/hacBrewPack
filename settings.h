@@ -44,7 +44,7 @@ typedef struct
 {
     hbp_keyset_t keyset;
     filepath_t temp_dir;
-    filepath_t out_dir;
+    filepath_t nca_dir;
     filepath_t nsp_dir;
     filepath_t exefs_dir;
     filepath_t romfs_dir;
@@ -53,6 +53,7 @@ typedef struct
     uint8_t noromfs;
     uint8_t nologo;
     uint8_t plaintext;
+    uint8_t keepncadir;
     unsigned char *keyareakey;
     int keygeneration;
     union {
