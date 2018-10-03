@@ -50,15 +50,15 @@ int main(int argc, char **argv)
 
     printf("hacBrewPack %s by The-4n\n\n", HACBREWPACK_VERSION);
 
-    // Hardcode temp directory and create it
+    // Hardcode default temp directory
     filepath_init(&settings.temp_dir);
     filepath_set(&settings.temp_dir, "hacbrewpack_temp");
 
-    // Hardcode output nca directory and create it
+    // Hardcode default output nca directory
     filepath_init(&settings.nca_dir);
     filepath_set(&settings.nca_dir, "hacbrewpack_nca");
 
-    // Hardcode output nsp directory and create it
+    // Hardcode default output nsp directory
     filepath_init(&settings.nsp_dir);
     filepath_set(&settings.nsp_dir, "hacbrewpack_nsp");
 
@@ -250,7 +250,7 @@ int main(int argc, char **argv)
 
     // Get TitleID from NACP
     printf("\n");
-    printf("----> Process NACP\n");
+    printf("----> Processing NACP\n");
     nacp_process(&settings, &cnmt_ctx);
     printf("\n");
 

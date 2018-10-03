@@ -267,20 +267,20 @@ void pfs0_calculate_master_hash(filepath_t *pfs0_hashtable_filepath, uint64_t ha
     }
 
     // Calculate hash
-    unsigned char *buf = (unsigned char *)malloc(hash_table_size);
     sha_ctx_t *sha_ctx = new_sha_ctx(HASH_TYPE_SHA256, 0);
     uint64_t read_size = 0x61A8000; // 100 MB buffer.
+    unsigned char *buf = (unsigned char *)malloc(read_size);
     uint64_t ofs = 0;
     while (ofs < hash_table_size)
     {
         if (ofs + read_size >= hash_table_size)
             read_size = hash_table_size - ofs;
-        if (fread(buf, 1, hash_table_size, pfs0_hashtable_file) != hash_table_size)
+        if (fread(buf, 1, read_size, pfs0_hashtable_file) != read_size)
         {
             fprintf(stderr, "Failed to read file: %s!\n", pfs0_hashtable_filepath->char_path);
             exit(EXIT_FAILURE);
         }
-        sha_update(sha_ctx, buf, hash_table_size);
+        sha_update(sha_ctx, buf, read_size);
         ofs += read_size;
     }
     sha_get_hash(sha_ctx, (unsigned char *)out_master_hash);

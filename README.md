@@ -9,7 +9,7 @@ Thanks: SciresM, yellows8, Adubbz, SwitchBrew
 ## Usage
 
 ### Keys
-You should place your keyset file with "keys.dat" filename in the same folder as hacBewPack  
+You should place your keyset file with "keys.dat" filename in the same folder as hacBrewPack  
 Alternatively, You can use -k or --keyset option to load your keyset file  
 Required keys are:  
 
@@ -73,4 +73,4 @@ Check template folder for default folder structure, Makefile, npdm json and othe
 
 This software is licensed under the terms of the GNU General Public License, version 2.  
 You can find a copy of the license in the LICENSE file.  
-Portions of project HacBrewPack are parts of other projects, make sure to check LICENSES folder
+Portions of project hacBrewPack are parts of other projects, make sure to check LICENSES folder

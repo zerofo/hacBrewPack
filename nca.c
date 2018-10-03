@@ -389,7 +389,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
     fclose(program_nca_file);
 
-    // Rename control.nca to ncaid.nca
+    // Rename program.nca to ncaid.nca
     filepath_t program_nca_final_path;
     filepath_init(&program_nca_final_path);
     filepath_copy(&program_nca_final_path, &settings->nca_dir);
@@ -405,7 +405,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
 void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 {
-    printf("----> Creating Meta NCA:\n");
+    printf("----> Creating Metadata NCA:\n");
     printf("===> Creating NCA header\n");
     nca_header_t nca_header;
     memset(&nca_header, 0, sizeof(nca_header));

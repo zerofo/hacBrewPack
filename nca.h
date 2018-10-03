@@ -94,25 +94,6 @@ typedef struct
 } nca_header_t;
 #pragma pack(pop)
 
-enum nca_section_type
-{
-    PFS0,
-    ROMFS,
-    BKTR,
-    NCA0_ROMFS,
-    INVALID
-};
-
-enum nca_version
-{
-    NCAVERSION_UNKNOWN = 0,
-    NCAVERSION_NCA0_BETA,
-    NCAVERSION_NCA0,
-    /* NCAVERSION_NCA1, // Does this exist? */
-    NCAVERSION_NCA2,
-    NCAVERSION_NCA3
-};
-
 void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
 void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
 void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);

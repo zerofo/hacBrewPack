@@ -1,8 +1,11 @@
+v1.16
+Fixed a bug cause failure of control.nacp validation in titles without AmericanEnglish title name and title author
+
 v1.15
 hacBrewPack now removes temp and nca directories before start and after the process is done. You can use --keepncadir to keep nca directory and files after the process is done
 hacBrewpack no longer creates separate files for ivfc level 6 and romfs which decreases the temp folder size
 Added buffer for calculating PFS0 masterhash
-Fixed a bug in building PFS0 which results in duplicate filepath separator
+Fixed a bug in building PFS0 which cause duplicate filepath separator in paths
 
 v1.10
 Added sdkverison option
