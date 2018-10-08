@@ -84,8 +84,8 @@ void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(control_nca_file) / 0x200); // Section end offset / 200
     nca_header.section_entries[0]._0x8[0] = 0x1;                                                     // Always 1
 
-    nca_header.fs_headers[0].fs_type = FS_TYPE_ROMFS;
-    nca_header.fs_headers[0]._0x0 = 0x2; // Always 2
+    nca_header.fs_headers[0].hash_type = HASH_TYPE_ROMFS;
+    nca_header.fs_headers[0].version = 0x2; // Always 2
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.magic = MAGIC_IVFC;
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.id = 0x20000; //Always 0x20000
     nca_header.fs_headers[0].romfs_superblock.ivfc_header.master_hash_size = 0x20;
@@ -213,9 +213,9 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(program_nca_file) / 0x200); // Section end offset / 200
     nca_header.section_entries[0]._0x8[0] = 0x1;                                                     // Always 1
 
+    nca_header.fs_headers[0].hash_type = HASH_TYPE_PFS0;
     nca_header.fs_headers[0].fs_type = FS_TYPE_PFS0;
-    nca_header.fs_headers[0].partition_type = 0x1;
-    nca_header.fs_headers[0]._0x0 = 0x2; // Always 2
+    nca_header.fs_headers[0].version = 0x2; // Always 2
     nca_header.fs_headers[0].pfs0_superblock.always_2 = 0x2;
     nca_header.fs_headers[0].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
     if (settings->plaintext == 0)
@@ -279,8 +279,8 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         nca_header.section_entries[1].media_end_offset = (uint32_t)(ftello64(program_nca_file) / 0x200);
         nca_header.section_entries[1]._0x8[0] = 0x1; // Always 1
 
-        nca_header.fs_headers[1].fs_type = FS_TYPE_ROMFS;
-        nca_header.fs_headers[1]._0x0 = 0x2; // Always 2
+        nca_header.fs_headers[1].hash_type = HASH_TYPE_ROMFS;
+        nca_header.fs_headers[1].version = 0x2; // Always 2
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.magic = MAGIC_IVFC;
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.id = 0x20000; //Always 0x20000
         nca_header.fs_headers[1].romfs_superblock.ivfc_header.master_hash_size = 0x20;
@@ -334,9 +334,9 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         nca_header.section_entries[2].media_end_offset = (uint32_t)(ftello64(program_nca_file) / 0x200); // Section end offset / 200
         nca_header.section_entries[2]._0x8[0] = 0x1;                                                     // Always 1
 
+        nca_header.fs_headers[2].hash_type = HASH_TYPE_PFS0;
         nca_header.fs_headers[2].fs_type = FS_TYPE_PFS0;
-        nca_header.fs_headers[2].partition_type = 0x1;
-        nca_header.fs_headers[2]._0x0 = 0x2;       // Always 2
+        nca_header.fs_headers[2].version = 0x2;       // Always 2
         nca_header.fs_headers[2].crypt_type = 0x1; // Plain text
         nca_header.fs_headers[2].pfs0_superblock.always_2 = 0x2;
         nca_header.fs_headers[2].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
@@ -477,9 +477,9 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(meta_nca_file) / 0x200); // Section end offset / 200
     nca_header.section_entries[0]._0x8[0] = 0x1;                                                  // Always 1
 
+    nca_header.fs_headers[0].hash_type = HASH_TYPE_PFS0;
     nca_header.fs_headers[0].fs_type = FS_TYPE_PFS0;
-    nca_header.fs_headers[0].partition_type = 0x1;
-    nca_header.fs_headers[0]._0x0 = 0x2; // Always 2
+    nca_header.fs_headers[0].version = 0x2; // Always 2
     nca_header.fs_headers[0].pfs0_superblock.always_2 = 0x2;
     nca_header.fs_headers[0].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
     if (settings->plaintext == 0)
