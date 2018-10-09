@@ -421,7 +421,8 @@ size_t build_romfs_into_file(filepath_t *in_dirpath, FILE *f_out, off_t base_off
     fwrite(&header, 1, sizeof(header), f_out);
 
     /* Write files. */
-    unsigned char *buffer = malloc(0x400000);
+    uint64_t read_size = 0x61A8000; // 100 MB
+    unsigned char *buffer = malloc(read_size); // 100 MB buffer.
     if (buffer == NULL)
     {
         fprintf(stderr, "Failed to allocate work buffer!\n");
@@ -440,7 +441,6 @@ size_t build_romfs_into_file(filepath_t *in_dirpath, FILE *f_out, off_t base_off
         printf("Writing %s to %s\n", cur_file->sum_path.char_path, out_romfspath->char_path);
         fseeko64(f_out, base_offset + cur_file->offset + ROMFS_FILEPARTITION_OFS, SEEK_SET);
         uint64_t offset = 0;
-        uint64_t read_size = 0x400000;
         while (offset < cur_file->size)
         {
             if (cur_file->size - offset < read_size)

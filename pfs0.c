@@ -156,7 +156,8 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
                 break;
             }
 
-            tmpbuf = malloc(fsentries[pos].size);
+            uint64_t read_size = 0x61A8000; // 100 MB
+            tmpbuf = malloc(read_size);
             if (tmpbuf == NULL)
             {
                 printf("Failed to allocate filedata.\n");
@@ -167,10 +168,19 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
 
             printf("Writing %s to %s\n", objpath, out_pfs0_filepath->char_path);
 
-            tmplen = fread(tmpbuf, 1, fsentries[pos].size, fin);
-            fclose(fin);
+            uint64_t offset = 0;
+            while (offset < fsentries[pos].size)
+            {
+                if (fsentries[pos].size - offset < read_size)
+                {
+                    read_size = fsentries[pos].size - offset;
+                }
+                tmplen = fread(tmpbuf, 1, read_size, fin);
+                fwrite(tmpbuf, 1, read_size, fout);
+                offset += read_size;
+            }
 
-            fwrite(tmpbuf, 1, fsentries[pos].size, fout);
+            fclose(fin);
             free(tmpbuf);
         }
     }
