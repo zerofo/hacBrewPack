@@ -25,6 +25,7 @@ typedef struct _stati64 os_stat64_t;
 #define os_closedir _wclosedir
 #define os_readdir _wreaddir
 #define os_stat _wstati64
+#define os_char_stat _stat64
 #define os_fclose fclose
 #define os_rename _wrename
 #define os_deletefile remove
@@ -44,6 +45,7 @@ typedef struct stat os_stat64_t;
 #define os_closedir closedir
 #define os_readdir readdir
 #define os_stat stat
+#define os_char_stat stat
 #define os_fclose fclose
 #define os_rename rename
 #define os_deletefile unlink

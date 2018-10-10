@@ -1,3 +1,6 @@
+v1.18
+Fixed a bug cause making bad PFS0 for files larger than 4GB in 32-bit platforms
+
 v1.17
 Added buffer for creating PFS0
 Increased buffer size for creating RomFS

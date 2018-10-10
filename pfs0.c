@@ -12,9 +12,13 @@
 
 int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *out_pfs0_size)
 {
+#if __MINGW32__
+    struct __stat64 objstats;
+#else
+    struct stat objstats;
+#endif
     DIR *dir = NULL;
     struct dirent *cur_dirent = NULL;
-    struct stat objstats;
     FILE *fout = NULL, *fin = NULL;
     int ret = 0;
     uint32_t tmplen = 0;
@@ -66,7 +70,7 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
         memset(objpath, 0, sizeof(objpath));
         snprintf(objpath, sizeof(objpath) - 1, "%s%s", in_dirpath_cpy.char_path, cur_dirent->d_name);
 
-        if (stat(objpath, &objstats) == -1)
+        if (os_char_stat(objpath, &objstats) == -1)
         {
             printf("Failed to stat: %s\n", objpath);
             exit(EXIT_FAILURE);
