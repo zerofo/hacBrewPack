@@ -54,6 +54,7 @@ typedef struct
     uint8_t nologo;
     uint8_t plaintext;
     uint8_t keepncadir;
+    uint8_t nopatchnacplogo;
     unsigned char *keyareakey;
     int keygeneration;
     union {

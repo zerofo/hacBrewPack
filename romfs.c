@@ -421,7 +421,7 @@ size_t build_romfs_into_file(filepath_t *in_dirpath, FILE *f_out, off_t base_off
     fwrite(&header, 1, sizeof(header), f_out);
 
     /* Write files. */
-    uint64_t read_size = 0x61A8000; // 100 MB
+    uint64_t read_size = 0x61A8000;            // 100 MB
     unsigned char *buffer = malloc(read_size); // 100 MB buffer.
     if (buffer == NULL)
     {
@@ -521,11 +521,11 @@ size_t romfs_build(filepath_t *in_dirpath, filepath_t *out_romfspath, uint64_t *
     uint64_t hash_block_size = IVFC_HASH_BLOCK_SIZE;
     uint64_t curr_offset = ftello64(f_out);
     uint64_t padding_size = hash_block_size - (curr_offset % hash_block_size);
-    unsigned char *buf = calloc(1, hash_block_size);
-    if (curr_offset % hash_block_size != 0)
+    if (padding_size != 0)
     {
-        memset(buf, 0, hash_block_size);
-        fwrite(buf, 1, padding_size, f_out);
+        unsigned char *padding_buf = (unsigned char *)calloc(1, padding_size);
+        fwrite(padding_buf, 1, padding_size, f_out);
+        free(padding_buf);
     }
 
     fclose(f_out);

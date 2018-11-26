@@ -1,3 +1,13 @@
+v1.20
+hacBrewPack now reads titleid from NPDM
+Added nonacplogopatch option
+Fixed a bug cause invalid IVFC level 6 when romfs section is big
+Fixed a bug in writing padding
+Fixed sdkversion valid range
+Changed hash block size for better compatibility 
+Increased NCA section encryption buffer size 
+Changed valid titleid range
+
 v1.18
 Fixed a bug cause making bad PFS0 for files larger than 4GB in 32-bit platforms
 

@@ -9,6 +9,7 @@
 #include "extkeys.h"
 #include "version.h"
 #include "nacp.h"
+#include "npdm.h"
 #include "cnmt.h"
 #include "pfs0.h"
 
@@ -30,13 +31,14 @@ static void usage(void)
             "--romfsdir               Set program romfs directory path, default path is ." OS_PATH_SEPARATOR "romfs" OS_PATH_SEPARATOR "\n"
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
+            "--noromfs                Skip creating program romfs section\n"
+            "--nologo                 Skip creating program logo section\n"
             "--keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1\n"
             "--keyareakey             Set key area key 2 in hex with 16 bytes lenght\n"
             "--sdkversion             Set SDK version in hex, default SDK version is 000C1100\n"
-            "--noromfs                Skip creating program romfs section\n"
-            "--nologo                 Skip creating program logo section\n"
             "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n"
-            "--keepncadir             Keep NCA directory\n",
+            "--keepncadir             Keep NCA directory\n"
+            "--nopatchnacplogo        Skip patching logo handeling in NACP\n",
             USAGE_PROGRAM_NAME);
     exit(EXIT_FAILURE);
 }
@@ -113,6 +115,7 @@ int main(int argc, char **argv)
                 {"sdkversion", 1, NULL, 12},
                 {"keyareakey", 1, NULL, 13},
                 {"keepncadir", 0, NULL, 14},
+                {"nopatchnacplogo", 0, NULL, 15},
                 {NULL, 0, NULL, 0},
             };
 
@@ -170,7 +173,7 @@ int main(int argc, char **argv)
         case 12:
             settings.sdk_version = strtoul(optarg, NULL, 16);
             // Validating SDK Version
-            if (settings.sdk_version < 0x000B0000 || settings.sdk_version > 0x00FFFFFF)
+            if (settings.sdk_version < 0x000B0000)
             {
                 fprintf(stderr, "Error: Invalid SDK version: %08" PRIX32 "\n"
                                 "Valid SDK version range: 000B0000 - 00FFFFFF\n",
@@ -183,6 +186,9 @@ int main(int argc, char **argv)
             break;
         case 14:
             settings.keepncadir = 1;
+            break;
+        case 15:
+            settings.nopatchnacplogo = 1;
             break;
         default:
             usage();
@@ -248,10 +254,15 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    // Get TitleID from NACP
+    // Get TitleID from NPDM
     printf("\n");
+    printf("----> Processing NPDM\n");
+    npdm_process(&settings, &cnmt_ctx);
+    printf("\n");
+
+    // Check NACP
     printf("----> Processing NACP\n");
-    nacp_process(&settings, &cnmt_ctx);
+    nacp_process(&settings);
     printf("\n");
 
     // Create NCAs

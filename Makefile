@@ -13,7 +13,7 @@ all:
 .c.o:
 	$(CC) $(INCLUDE) -c $(CFLAGS) -o $@ $<
 
-hacbrewpack: sha.o aes.o extkeys.o pki.o utils.o main.o filepath.o ConvertUTF.o nca.o romfs.o pfs0.o ivfc.o nacp.o cnmt.o
+hacbrewpack: sha.o aes.o extkeys.o pki.o utils.o main.o filepath.o ConvertUTF.o nca.o romfs.o pfs0.o ivfc.o nacp.o npdm.o cnmt.o
 	$(CC) -o $@ $^ $(LDFLAGS) -L $(LIBDIR)
 
 aes.o: aes.h types.h
@@ -35,6 +35,8 @@ pfs0.o: pfs0.h
 cnmt.o: cnmt.h
 
 nacp.o: nacp.h
+
+npdm.o: npdm.h
 
 ivfc.o: ivfc.h
 

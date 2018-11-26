@@ -4,6 +4,6 @@
 #include "settings.h"
 #include "cnmt.h"
 
-void nacp_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
+void nacp_process(hbp_settings_t *settings);
 
 #endif

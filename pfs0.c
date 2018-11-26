@@ -258,10 +258,11 @@ void pfs0_create_hashtable(filepath_t *pfs0_path, filepath_t *pfs0_hashtable_pat
     // Write Padding
     uint64_t pfs0_paddingsize = PFS0_PADDING_SIZE;
     uint64_t padding_size = pfs0_paddingsize - (curr_offset % pfs0_paddingsize);
-    if (curr_offset % hash_block_size != 0)
+    if (padding_size != 0)
     {
-        memset(buf, 0, hash_block_size);
-        fwrite(buf, 1, padding_size, dst_file);
+        unsigned char *padding_buf = (unsigned char *)calloc(1, padding_size);
+        fwrite(padding_buf, 1, padding_size, dst_file);
+        free(padding_buf);
     }
     *out_pfs0_offset = (uint64_t)ftello64(dst_file);
 

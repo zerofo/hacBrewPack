@@ -7,7 +7,7 @@
 #include "filepath.h"
 
 #define MAGIC_PFS0 0x30534650
-#define PFS0_HASH_BLOCK_SIZE 0x8000;
+#define PFS0_HASH_BLOCK_SIZE 0x10000;
 #define PFS0_PADDING_SIZE 0x4000;
 
 #pragma pack(push, 1)
