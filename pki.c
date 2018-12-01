@@ -177,6 +177,75 @@ const hbp_keyset_t hac_keys_retail = {
         ZEROES_KEY  /* Keyblob Key Source 31 (CONSOLE UNIQUE) */
     },
     ZEROES_KEY, /* Keyblob Mac Key Source */
+    ZEROES_KEY, /* TSEC Root Key */
+    {
+        ZEROES_KEY, /* Master Kek Source 00 */
+        ZEROES_KEY, /* Master Kek Source 01 */
+        ZEROES_KEY, /* Master Kek Source 02 */
+        ZEROES_KEY, /* Master Kek Source 03 */
+        ZEROES_KEY, /* Master Kek Source 04 */
+        ZEROES_KEY, /* Master Kek Source 05 */
+        ZEROES_KEY, /* Master Kek Source 06 */
+        ZEROES_KEY, /* Master Kek Source 07 */
+        ZEROES_KEY, /* Master Kek Source 08 */
+        ZEROES_KEY, /* Master Kek Source 09 */
+        ZEROES_KEY, /* Master Kek Source 10 */
+        ZEROES_KEY, /* Master Kek Source 11 */
+        ZEROES_KEY, /* Master Kek Source 12 */
+        ZEROES_KEY, /* Master Kek Source 13 */
+        ZEROES_KEY, /* Master Kek Source 14 */
+        ZEROES_KEY, /* Master Kek Source 15 */
+        ZEROES_KEY, /* Master Kek Source 16 */
+        ZEROES_KEY, /* Master Kek Source 17 */
+        ZEROES_KEY, /* Master Kek Source 18 */
+        ZEROES_KEY, /* Master Kek Source 19 */
+        ZEROES_KEY, /* Master Kek Source 20 */
+        ZEROES_KEY, /* Master Kek Source 21 */
+        ZEROES_KEY, /* Master Kek Source 22 */
+        ZEROES_KEY, /* Master Kek Source 23 */
+        ZEROES_KEY, /* Master Kek Source 24 */
+        ZEROES_KEY, /* Master Kek Source 25 */
+        ZEROES_KEY, /* Master Kek Source 26 */
+        ZEROES_KEY, /* Master Kek Source 27 */
+        ZEROES_KEY, /* Master Kek Source 28 */
+        ZEROES_KEY, /* Master Kek Source 29 */
+        ZEROES_KEY, /* Master Kek Source 30 */
+        ZEROES_KEY  /* Master Kek Source 31 */
+    },
+    {
+        ZEROES_KEY, /* Master Kek 00 */
+        ZEROES_KEY, /* Master Kek 01 */
+        ZEROES_KEY, /* Master Kek 02 */
+        ZEROES_KEY, /* Master Kek 03 */
+        ZEROES_KEY, /* Master Kek 04 */
+        ZEROES_KEY, /* Master Kek 05 */
+        ZEROES_KEY, /* Master Kek 06 */
+        ZEROES_KEY, /* Master Kek 07 */
+        ZEROES_KEY, /* Master Kek 08 */
+        ZEROES_KEY, /* Master Kek 09 */
+        ZEROES_KEY, /* Master Kek 10 */
+        ZEROES_KEY, /* Master Kek 11 */
+        ZEROES_KEY, /* Master Kek 12 */
+        ZEROES_KEY, /* Master Kek 13 */
+        ZEROES_KEY, /* Master Kek 14 */
+        ZEROES_KEY, /* Master Kek 15 */
+        ZEROES_KEY, /* Master Kek 16 */
+        ZEROES_KEY, /* Master Kek 17 */
+        ZEROES_KEY, /* Master Kek 18 */
+        ZEROES_KEY, /* Master Kek 19 */
+        ZEROES_KEY, /* Master Kek 20 */
+        ZEROES_KEY, /* Master Kek 21 */
+        ZEROES_KEY, /* Master Kek 22 */
+        ZEROES_KEY, /* Master Kek 23 */
+        ZEROES_KEY, /* Master Kek 24 */
+        ZEROES_KEY, /* Master Kek 25 */
+        ZEROES_KEY, /* Master Kek 26 */
+        ZEROES_KEY, /* Master Kek 27 */
+        ZEROES_KEY, /* Master Kek 28 */
+        ZEROES_KEY, /* Master Kek 29 */
+        ZEROES_KEY, /* Master Kek 30 */
+        ZEROES_KEY  /* Master Kek 31 */
+    },
     ZEROES_KEY, /* Master Key Source */
     {
         ZEROES_KEY, /* Master Key 00 */
@@ -293,6 +362,8 @@ const hbp_keyset_t hac_keys_retail = {
         ZEROES_XTS_KEY, /* SD Card Key Source, for NCAs. */
         ZEROES_XTS_KEY, /* SD Card Key Source, for saves. */
     },
+    ZEROES_KEY,     /* Save MAC kek Source. */
+    ZEROES_KEY,     /* Save MAC key Source. */
     ZEROES_XTS_KEY, /* Encrypted Header Key */
     ZEROES_XTS_KEY, /* Header key */
     {
@@ -419,7 +490,7 @@ const hbp_keyset_t hac_keys_retail = {
      0x09, 0x27, 0x96, 0x3F, 0x07, 0x9A, 0x91, 0xF7, 0x16, 0xBF, 0xC6, 0x3A, 0x82, 0x5A, 0x4B, 0xCF,
      0x49, 0x50, 0x95, 0x8C, 0x55, 0x80, 0x7E, 0x39, 0xB1, 0x48, 0x05, 0x1E, 0x21, 0xC7, 0x24, 0x4F}};
 
-void generate_kek(unsigned char *dst, const unsigned char *src, const unsigned char *master_key, const unsigned char *kek_seed, const unsigned char *key_seed)
+static void generate_kek(unsigned char *dst, const unsigned char *src, const unsigned char *master_key, const unsigned char *kek_seed, const unsigned char *key_seed)
 {
     unsigned char kek[0x10];
     unsigned char src_kek[0x10];
@@ -443,21 +514,26 @@ void generate_kek(unsigned char *dst, const unsigned char *src, const unsigned c
     }
 }
 
-void pki_derive_keys(hbp_keyset_t *keyset) {
+void pki_derive_keys(hbp_keyset_t *keyset)
+{
     unsigned char zeroes[0x100];
     unsigned char cmac[0x10];
     memset(zeroes, 0, 0x100);
     memset(cmac, 0, 0x10);
     /* Derive keys as necessary. */
-    for (unsigned int i = 0; i < 0x20; i++) {
+    for (unsigned int i = 0; i < 0x6; i++)
+    {
         /* Start by deriving keyblob keys. */
-        if (memcmp(&keyset->secure_boot_key, zeroes, 0x10) == 0) {
+        if (memcmp(&keyset->secure_boot_key, zeroes, 0x10) == 0)
+        {
             continue;
         }
-        if (memcmp(&keyset->tsec_key, zeroes, 0x10) == 0) {
+        if (memcmp(&keyset->tsec_key, zeroes, 0x10) == 0)
+        {
             continue;
         }
-        if (memcmp(&keyset->keyblob_key_sources[i], zeroes, 0x10) == 0) {
+        if (memcmp(&keyset->keyblob_key_sources[i], zeroes, 0x10) == 0)
+        {
             continue;
         }
         aes_ctx_t *sbk_ctx = new_aes_ctx(keyset->secure_boot_key, 0x10, AES_MODE_ECB);
@@ -466,117 +542,154 @@ void pki_derive_keys(hbp_keyset_t *keyset) {
         aes_decrypt(sbk_ctx, &keyset->keyblob_keys[i], &keyset->keyblob_keys[i], 0x10);
         free_aes_ctx(tsec_ctx);
         free_aes_ctx(sbk_ctx);
-        if (memcmp(keyset->keyblob_mac_key_source, zeroes, 0x10) == 0) {
+        if (memcmp(keyset->keyblob_mac_key_source, zeroes, 0x10) == 0)
+        {
             continue;
         }
         aes_ctx_t *mac_gen_ctx = new_aes_ctx(&keyset->keyblob_keys[i], 0x10, AES_MODE_ECB);
         aes_decrypt(mac_gen_ctx, &keyset->keyblob_mac_keys[i], keyset->keyblob_mac_key_source, 0x10);
         free_aes_ctx(mac_gen_ctx);
     }
-    for (unsigned int i = 0; i < 0x20; i++) {
+    for (unsigned int i = 0; i < 0x6; i++)
+    {
         /* Then we decrypt keyblobs. */
-        if (memcmp(&keyset->keyblob_keys[i], zeroes, 0x10) == 0) {
+        if (memcmp(&keyset->keyblob_keys[i], zeroes, 0x10) == 0)
+        {
             continue;
-        }        
-        if (memcmp(&keyset->keyblob_mac_keys[i], zeroes, 0x10) == 0) {
+        }
+        if (memcmp(&keyset->keyblob_mac_keys[i], zeroes, 0x10) == 0)
+        {
             continue;
-        }    
-        if (memcmp(&keyset->encrypted_keyblobs[i], zeroes, 0xB0) == 0) {
+        }
+        if (memcmp(&keyset->encrypted_keyblobs[i], zeroes, 0xB0) == 0)
+        {
             continue;
         }
         aes_calculate_cmac(cmac, &keyset->encrypted_keyblobs[i][0x10], 0xA0, keyset->keyblob_mac_keys[i]);
-        if (memcmp(cmac, &keyset->encrypted_keyblobs[i][0], 0x10) != 0) {
+        if (memcmp(cmac, &keyset->encrypted_keyblobs[i][0], 0x10) != 0)
+        {
             fprintf(stderr, "[ WARN ] Keyblob MAC %02x is invalid. Are SBK/TSEC key correct?\n", i);
             continue;
         }
         aes_ctx_t *keyblob_ctx = new_aes_ctx(&keyset->keyblob_keys[i], 0x10, AES_MODE_CTR);
         aes_setiv(keyblob_ctx, &keyset->encrypted_keyblobs[i][0x10], 0x10);
         aes_decrypt(keyblob_ctx, &keyset->keyblobs[i], &keyset->encrypted_keyblobs[i][0x20], sizeof(keyset->keyblobs[i]));
+        /* Set package1 key as relevant. */
+        if (memcmp(keyset->keyblobs[i] + 0x80, zeroes, 0x10) != 0)
+        {
+            memcpy(&keyset->package1_keys[i], &keyset->keyblobs[i][0x80], 0x10);
+        }
+        /* Set master kek as relevant. */
+        if (memcmp(keyset->keyblobs[i] + 0x00, zeroes, 0x10) != 0)
+        {
+            memcpy(&keyset->master_keks[i], &keyset->keyblobs[i][0x00], 0x10);
+        }
         free_aes_ctx(keyblob_ctx);
     }
-    for (unsigned int i = 0; i < 0x20; i++) {
-        /* We only need 0x70:0x80 in the blob. */
-        if (memcmp(keyset->keyblobs[i] + 0x70, zeroes, 0x10) == 0) {
+    for (unsigned int i = 0x6; i < 0x20; i++)
+    {
+        /* Do new keygen for 6.2.0+. */
+        if (memcmp(keyset->tsec_root_key, zeroes, 0x10) == 0)
+        {
+            continue;
+        }
+        if (memcmp(keyset->master_kek_sources[i], zeroes, 0x10) == 0)
+        {
             continue;
         }
 
-        /* Package1 key is at the end of the keyblob. */
-        memcpy(&keyset->package1_keys[i], &keyset->keyblobs[i][0x80], 0x10);
+        aes_ctx_t *tsec_root_ctx = new_aes_ctx(keyset->tsec_root_key, 0x10, AES_MODE_ECB);
+        aes_decrypt(tsec_root_ctx, keyset->master_keks[i], keyset->master_kek_sources[i], 0x10);
+        free_aes_ctx(tsec_root_ctx);
     }
-    for (unsigned int i = 0; i < 0x20; i++) {
+    for (unsigned int i = 0; i < 0x20; i++)
+    {
         /* Then we derive master keys. */
-        if (memcmp(keyset->master_key_source, zeroes, 0x10) == 0) {
+        if (memcmp(keyset->master_key_source, zeroes, 0x10) == 0)
+        {
             continue;
-        } 
-        /* We only need the first key in the blob. */
-        if (memcmp(keyset->keyblobs[i], zeroes, 0x10) == 0) {
+        }
+        /* We need a non-zero master kek. */
+        if (memcmp(keyset->master_keks[i], zeroes, 0x10) == 0)
+        {
             continue;
-        } 
-        
+        }
+
         /* Derive Master Keys. */
-        aes_ctx_t *master_gen_ctx = new_aes_ctx(&keyset->keyblobs[i], 0x10, AES_MODE_ECB);
+        aes_ctx_t *master_gen_ctx = new_aes_ctx(&keyset->master_keks[i], 0x10, AES_MODE_ECB);
         aes_decrypt(master_gen_ctx, &keyset->master_keys[i], keyset->master_key_source, 0x10);
         free_aes_ctx(master_gen_ctx);
     }
-    for (unsigned int i = 0; i < 0x20; i++) {
-        if (memcmp(&keyset->master_keys[i], zeroes, 0x10) == 0) {
+    for (unsigned int i = 0; i < 0x20; i++)
+    {
+        if (memcmp(&keyset->master_keys[i], zeroes, 0x10) == 0)
+        {
             continue;
         }
-        
+
         aes_ctx_t *master_ctx = new_aes_ctx(&keyset->master_keys[i], 0x10, AES_MODE_ECB);
-        
+
         /* Derive Key Area Encryption Keys */
-        if (memcmp(keyset->key_area_key_application_source, zeroes, 0x10) != 0) {
+        if (memcmp(keyset->key_area_key_application_source, zeroes, 0x10) != 0)
+        {
             generate_kek(keyset->key_area_keys[i][0], keyset->key_area_key_application_source, keyset->master_keys[i], keyset->aes_kek_generation_source, keyset->aes_key_generation_source);
         }
-        if (memcmp(keyset->key_area_key_ocean_source, zeroes, 0x10) != 0) {
+        if (memcmp(keyset->key_area_key_ocean_source, zeroes, 0x10) != 0)
+        {
             generate_kek(keyset->key_area_keys[i][1], keyset->key_area_key_ocean_source, keyset->master_keys[i], keyset->aes_kek_generation_source, keyset->aes_key_generation_source);
         }
-        if (memcmp(keyset->key_area_key_system_source, zeroes, 0x10) != 0) {
+        if (memcmp(keyset->key_area_key_system_source, zeroes, 0x10) != 0)
+        {
             generate_kek(keyset->key_area_keys[i][2], keyset->key_area_key_system_source, keyset->master_keys[i], keyset->aes_kek_generation_source, keyset->aes_key_generation_source);
         }
-        
+
         /* Derive Titlekek */
-        if (memcmp(keyset->titlekek_source, zeroes, 0x10) != 0) {
+        if (memcmp(keyset->titlekek_source, zeroes, 0x10) != 0)
+        {
             aes_decrypt(master_ctx, &keyset->titlekeks[i], keyset->titlekek_source, 0x10);
         }
-        
+
         /* Derive Package2 Key */
-        if (memcmp(keyset->package2_key_source, zeroes, 0x10) != 0) {
+        if (memcmp(keyset->package2_key_source, zeroes, 0x10) != 0)
+        {
             aes_decrypt(master_ctx, &keyset->package2_keys[i], keyset->package2_key_source, 0x10);
         }
-        
+
         /* Derive Header Key */
-        if (i == 0 && memcmp(keyset->header_kek_source, zeroes, 0x10) != 0 && memcmp(keyset->header_key_source, zeroes, 0x20) != 0) {
+        if (i == 0 && memcmp(keyset->header_kek_source, zeroes, 0x10) != 0 && memcmp(keyset->header_key_source, zeroes, 0x20) != 0)
+        {
             unsigned char header_kek[0x10];
             generate_kek(header_kek, keyset->header_kek_source, keyset->master_keys[i], keyset->aes_kek_generation_source, keyset->aes_key_generation_source);
             aes_ctx_t *header_ctx = new_aes_ctx(header_kek, 0x10, AES_MODE_ECB);
             aes_decrypt(header_ctx, keyset->header_key, keyset->header_key_source, 0x20);
             free_aes_ctx(header_ctx);
         }
-        
+
         /* Derive SD Card Key */
-        if (i == 0 && memcmp(keyset->sd_card_kek_source, zeroes, 0x10) != 0) {
+        if (i == 0 && memcmp(keyset->sd_card_kek_source, zeroes, 0x10) != 0)
+        {
             unsigned char sd_kek[0x10];
             generate_kek(sd_kek, keyset->sd_card_kek_source, keyset->master_keys[i], keyset->aes_kek_generation_source, keyset->aes_key_generation_source);
             aes_ctx_t *sd_ctx = new_aes_ctx(sd_kek, 0x10, AES_MODE_ECB);
 
-            for (unsigned int k = 0; k < 2; k++) {
-                if (memcmp(keyset->sd_card_key_sources[k], zeroes, 0x20) != 0) {
+            for (unsigned int k = 0; k < 2; k++)
+            {
+                if (memcmp(keyset->sd_card_key_sources[k], zeroes, 0x20) != 0)
+                {
                     aes_decrypt(sd_ctx, keyset->sd_card_keys[k], keyset->sd_card_key_sources[k], 0x20);
                 }
             }
-            
+
             free_aes_ctx(sd_ctx);
         }
-        
+
         free_aes_ctx(master_ctx);
     }
-
 }
 
 void pki_initialize_keyset(hbp_keyset_t *keyset)
 {
+
     memcpy(keyset, &hac_keys_retail, sizeof(*keyset));
     pki_derive_keys(keyset);
 }

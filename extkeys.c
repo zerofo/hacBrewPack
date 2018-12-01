@@ -51,7 +51,7 @@ static int get_kv(FILE *f, char **key, char **value)
         for (; *p == ' ' || *p == '\t'; ++p) \
             ;                                \
     } while (0);
-    static char line[512];
+    static char line[1024];
     char *k, *v, *p, *end;
 
     *key = *value = NULL;
@@ -103,9 +103,11 @@ static int get_kv(FILE *f, char **key, char **value)
         }
 
         if (*p != '_' &&
-            (*p < '0' && *p > '9') &&
-            (*p < 'a' && *p > 'z'))
+            (*p < '0' || *p > '9') &&
+            (*p < 'a' || *p > 'z'))
+        {
             return -1;
+        }
     }
 
     /* Bail if the final ++p put us at the end of string */
@@ -279,6 +281,16 @@ void extkeys_initialize_keyset(hbp_keyset_t *keyset, FILE *f)
                 parse_hex_key(keyset->sd_card_key_sources[0], value, sizeof(keyset->sd_card_key_sources[0]));
                 matched_key = 1;
             }
+            else if (strcmp(key, "save_mac_kek_source") == 0)
+            {
+                parse_hex_key(keyset->save_mac_kek_source, value, sizeof(keyset->save_mac_kek_source));
+                matched_key = 1;
+            }
+            else if (strcmp(key, "save_mac_key_source") == 0)
+            {
+                parse_hex_key(keyset->save_mac_key_source, value, sizeof(keyset->save_mac_key_source));
+                matched_key = 1;
+            }
             else if (strcmp(key, "master_key_source") == 0)
             {
                 parse_hex_key(keyset->master_key_source, value, sizeof(keyset->master_key_source));
@@ -299,13 +311,18 @@ void extkeys_initialize_keyset(hbp_keyset_t *keyset, FILE *f)
                 parse_hex_key(keyset->tsec_key, value, sizeof(keyset->tsec_key));
                 matched_key = 1;
             }
+            else if (strcmp(key, "tsec_root_key") == 0 || strcmp(key, "tsec_root_key_00") == 0)
+            {
+                parse_hex_key(keyset->tsec_root_key, value, sizeof(keyset->tsec_root_key));
+                matched_key = 1;
+            }
             else if (strcmp(key, "beta_nca0_exponent") == 0)
             {
                 matched_key = 1;
             }
             else
             {
-                char test_name[0x100];
+                char test_name[0x100] = {0};
                 memset(test_name, 0, sizeof(100));
                 for (unsigned int i = 0; i < 0x20 && !matched_key; i++)
                 {
@@ -345,6 +362,26 @@ void extkeys_initialize_keyset(hbp_keyset_t *keyset, FILE *f)
                     if (strcmp(key, test_name) == 0)
                     {
                         parse_hex_key(keyset->keyblobs[i], value, sizeof(keyset->keyblobs[i]));
+                        matched_key = 1;
+                        break;
+                    }
+                }
+                for (unsigned int i = 0x6; i < 0x20 && !matched_key; i++)
+                {
+                    snprintf(test_name, sizeof(test_name), "master_kek_source_%02" PRIx32, i);
+                    if (strcmp(key, test_name) == 0)
+                    {
+                        parse_hex_key(keyset->master_kek_sources[i], value, sizeof(keyset->master_kek_sources[i]));
+                        matched_key = 1;
+                        break;
+                    }
+                }
+                for (unsigned int i = 0; i < 0x20 && !matched_key; i++)
+                {
+                    snprintf(test_name, sizeof(test_name), "master_kek_%02" PRIx32, i);
+                    if (strcmp(key, test_name) == 0)
+                    {
+                        parse_hex_key(keyset->master_keks[i], value, sizeof(keyset->master_keks[i]));
                         matched_key = 1;
                         break;
                     }
