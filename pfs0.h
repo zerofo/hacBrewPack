@@ -7,8 +7,10 @@
 #include "filepath.h"
 
 #define MAGIC_PFS0 0x30534650
-#define PFS0_HASH_BLOCK_SIZE 0x10000;
-#define PFS0_PADDING_SIZE 0x4000;
+#define PFS0_EXEFS_HASH_BLOCK_SIZE 0x10000;
+#define PFS0_LOGO_HASH_BLOCK_SIZE 0x1000;
+#define PFS0_META_HASH_BLOCK_SIZE 0x1000;
+#define PFS0_PADDING_SIZE 0x200;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -42,7 +44,7 @@ typedef struct {
 #pragma pack(pop)
 
 int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *out_pfs0_size);
-void pfs0_create_hashtable(filepath_t *pfs0_path, filepath_t *pfs0_hashtable_path, uint64_t *out_hashtable_size, uint64_t *out_pfs0_offset);
+void pfs0_create_hashtable(filepath_t *pfs0_path, filepath_t *pfs0_hashtable_path, uint32_t hash_block_size, uint64_t *out_hashtable_size, uint64_t *out_pfs0_offset);
 void pfs0_calculate_master_hash(filepath_t *pfs0_hashtable_filepath, uint64_t hash_table_size, uint8_t *out_master_hash);
 
 #endif

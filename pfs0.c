@@ -196,11 +196,10 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
     return ret;
 }
 
-void pfs0_create_hashtable(filepath_t *pfs0_path, filepath_t *pfs0_hashtable_path, uint64_t *out_hashtable_size, uint64_t *out_pfs0_offset)
+void pfs0_create_hashtable(filepath_t *pfs0_path, filepath_t *pfs0_hashtable_path, uint32_t hash_block_size, uint64_t *out_hashtable_size, uint64_t *out_pfs0_offset)
 {
     FILE *src_file;
     FILE *dst_file;
-    uint64_t hash_block_size = PFS0_HASH_BLOCK_SIZE;
 
     // Open files
     src_file = os_fopen(pfs0_path->os_path, OS_MODE_READ);

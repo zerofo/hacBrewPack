@@ -187,10 +187,11 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     filepath_init(&program_exefs_hash_table);
     filepath_copy(&program_exefs_hash_table, &settings->temp_dir);
     filepath_append(&program_exefs_hash_table, "program_sec0_exefs_hashtable");
+    uint32_t exefs_hash_block_size = PFS0_EXEFS_HASH_BLOCK_SIZE;
     printf("\n===> Building ExeFS\n");
     pfs0_build(&settings->exefs_dir, &program_exefs, &nca_header.fs_headers[0].pfs0_superblock.pfs0_size);
     printf("Calculating hash table\n");
-    pfs0_create_hashtable(&program_exefs, &program_exefs_hash_table, &nca_header.fs_headers[0].pfs0_superblock.hash_table_size, &nca_header.fs_headers[0].pfs0_superblock.pfs0_offset);
+    pfs0_create_hashtable(&program_exefs, &program_exefs_hash_table, exefs_hash_block_size, &nca_header.fs_headers[0].pfs0_superblock.hash_table_size, &nca_header.fs_headers[0].pfs0_superblock.pfs0_offset);
 
     // Write ExeFS
     printf("\n===> Writing ExeFS\n");
@@ -217,7 +218,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.fs_headers[0].fs_type = FS_TYPE_PFS0;
     nca_header.fs_headers[0].version = 0x2; // Always 2
     nca_header.fs_headers[0].pfs0_superblock.always_2 = 0x2;
-    nca_header.fs_headers[0].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
+    nca_header.fs_headers[0].pfs0_superblock.block_size = exefs_hash_block_size;
     if (settings->plaintext == 0)
         nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
     else
@@ -311,10 +312,11 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         filepath_init(&program_logo_hash_table);
         filepath_copy(&program_logo_hash_table, &settings->temp_dir);
         filepath_append(&program_logo_hash_table, "program_sec2_logo_hashtable");
+        uint32_t logo_hash_block_size = PFS0_LOGO_HASH_BLOCK_SIZE;
         printf("\n===> Building PFS0\n");
         pfs0_build(&settings->logo_dir, &program_logo, &nca_header.fs_headers[2].pfs0_superblock.pfs0_size);
         printf("Calculating hash table\n");
-        pfs0_create_hashtable(&program_logo, &program_logo_hash_table, &nca_header.fs_headers[2].pfs0_superblock.hash_table_size, &nca_header.fs_headers[2].pfs0_superblock.pfs0_offset);
+        pfs0_create_hashtable(&program_logo, &program_logo_hash_table, logo_hash_block_size, &nca_header.fs_headers[2].pfs0_superblock.hash_table_size, &nca_header.fs_headers[2].pfs0_superblock.pfs0_offset);
 
         // Write IVFC levels
         printf("\n===> Writing IVFC levels\n");
@@ -339,7 +341,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         nca_header.fs_headers[2].version = 0x2;       // Always 2
         nca_header.fs_headers[2].crypt_type = 0x1; // Plain text
         nca_header.fs_headers[2].pfs0_superblock.always_2 = 0x2;
-        nca_header.fs_headers[2].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
+        nca_header.fs_headers[2].pfs0_superblock.block_size = logo_hash_block_size;
 
         // Calculate master hash and section hash
         printf("\n===> Calculating Hashes:\n");
@@ -451,10 +453,11 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     filepath_init(&meta_pfs0_hash_table);
     filepath_copy(&meta_pfs0_hash_table, &settings->temp_dir);
     filepath_append(&meta_pfs0_hash_table, "meta_sec0_pfs0_hashtable");
+    uint32_t meta_hash_block_size = PFS0_META_HASH_BLOCK_SIZE;
     printf("\n===> Building PFS0\n");
     pfs0_build(&cnmt_dir_path, &meta_pfs0, &nca_header.fs_headers[0].pfs0_superblock.pfs0_size);
     printf("Calculating hash table\n");
-    pfs0_create_hashtable(&meta_pfs0, &meta_pfs0_hash_table, &nca_header.fs_headers[0].pfs0_superblock.hash_table_size, &nca_header.fs_headers[0].pfs0_superblock.pfs0_offset);
+    pfs0_create_hashtable(&meta_pfs0, &meta_pfs0_hash_table, meta_hash_block_size, &nca_header.fs_headers[0].pfs0_superblock.hash_table_size, &nca_header.fs_headers[0].pfs0_superblock.pfs0_offset);
 
     // Write ExeFS
     printf("\n===> Writing PFS0 section\n");
@@ -481,7 +484,7 @@ void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.fs_headers[0].fs_type = FS_TYPE_PFS0;
     nca_header.fs_headers[0].version = 0x2; // Always 2
     nca_header.fs_headers[0].pfs0_superblock.always_2 = 0x2;
-    nca_header.fs_headers[0].pfs0_superblock.block_size = PFS0_HASH_BLOCK_SIZE;
+    nca_header.fs_headers[0].pfs0_superblock.block_size = meta_hash_block_size;
     if (settings->plaintext == 0)
         nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
     else

@@ -78,7 +78,7 @@ Options:
 --nopatchnacplogo        Skip patching logo handeling in NACP  
 ```
 
-HacBrewPack doesn't need any options to work. if you follow folder structure properly, you can just run the program and it'll make NSP  
+hacBrewPack doesn't need any options to work. if you follow folder structure properly, you can just run the program and it'll make a NSP  
 Check template folder for default folder structure, Makefile, npdm json and other useful info  
 
 ## Licensing
