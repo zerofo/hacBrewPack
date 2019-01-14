@@ -1,3 +1,6 @@
+v1.30
+Added --titleid, --titlename and --titlepublisher options for overriding main.npdm and control.nacp
+
 v1.21
 Added support for keygeneration 7
 Changed PFS0 hash block size and padding size

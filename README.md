@@ -75,7 +75,11 @@ Options:
 --sdkversion             Set SDK version in hex, default SDK version is 000C1100  
 --plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
 --keepncadir             Keep NCA directory  
---nopatchnacplogo        Skip patching logo handeling in NACP  
+Overriding options:  
+--titleid                Use specified titleid for creating ncas and patch titleid in npdm and nacp  
+--titlename              Change title name in nacp for all languages, max size is 512 bytes  
+--titlepublisher         Change title publisher in nacp for all languages, max size is 256 bytes  
+--nopatchnacplogo        Skip changing logo handeling to auto in NACP  
 ```
 
 hacBrewPack doesn't need any options to work. if you follow folder structure properly, you can just run the program and it'll make a NSP  

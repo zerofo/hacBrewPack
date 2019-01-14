@@ -71,9 +71,14 @@ void npdm_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         exit(EXIT_FAILURE);
     }
 
-    // Set TitleID
-    printf("Getting TitleID\n");
-    cnmt_ctx->cnmt_header.title_id = aci0.title_id;
+    // Set TitleID if no titleid is specified
+    if (settings->title_id == 0)
+    {
+        printf("Getting TitleID\n");
+        cnmt_ctx->cnmt_header.title_id = aci0.title_id;
+    }
+    else
+        cnmt_ctx->cnmt_header.title_id = settings->title_id;
 
     printf("Validating TitleID\n");
     // Make sure that tid is within valid range
@@ -86,6 +91,14 @@ void npdm_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     }
     if (cnmt_ctx->cnmt_header.title_id > 0x01ffffffffffffff)
         printf("Warning: TitleID %" PRIx64 " is greater than 01ffffffffffffff and it's not suggested\n", cnmt_ctx->cnmt_header.title_id);
+
+    // Patch NPDM titleid if it's specified
+    if (settings->title_id != 0)
+    {
+        // Seek to titleid offset and write new titleid
+        fseeko64(fl, npdm.aci0_offset + 0x10, SEEK_SET);
+        fwrite(&settings->title_id, 1, 8, fl);
+    }
 
     fclose(fl);
 }
