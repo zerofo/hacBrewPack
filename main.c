@@ -304,7 +304,7 @@ int main(int argc, char **argv)
     printf("\n");
     nca_create_control(&settings, &cnmt_ctx);
     printf("\n");
-    if (settings.htmldoc_romfs_dir.valid = VALIDITY_VALID)
+    if (settings.htmldoc_romfs_dir.valid == VALIDITY_VALID)
     {
         nca_create_manual_htmldoc(&settings, &cnmt_ctx);
         printf("\n");
