@@ -1,3 +1,6 @@
+v2.00
+Added support for creating HtmlDocument ncas
+
 v1.30
 Added --titleid, --titlename and --titlepublisher options for overriding main.npdm and control.nacp
 
