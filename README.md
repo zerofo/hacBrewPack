@@ -68,6 +68,7 @@ Options:
 --romfsdir               Set program romfs directory path, default path is ./romfs/  
 --logodir                Set program logo directory path, default path is ./logo/  
 --controldir             Set control romfs directory path, default path is ./control/  
+--htmldocdir             Set HtmlDocument romfs directory path  
 --noromfs                Skip creating program romfs section  
 --nologo                 Skip creating program logo section  
 --keygeneration          Set keygeneration for encrypting key area keys  

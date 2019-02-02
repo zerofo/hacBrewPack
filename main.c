@@ -31,6 +31,7 @@ static void usage(void)
             "--romfsdir               Set program romfs directory path, default path is ." OS_PATH_SEPARATOR "romfs" OS_PATH_SEPARATOR "\n"
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
             "--controldir             Set control romfs directory path, default path is ." OS_PATH_SEPARATOR "control" OS_PATH_SEPARATOR "\n"
+            "--htmldocdir             Set HtmlDocument romfs directory path\n"
             "--noromfs                Skip creating program romfs section\n"
             "--nologo                 Skip creating program logo section\n"
             "--keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1\n"
@@ -123,6 +124,7 @@ int main(int argc, char **argv)
                 {"titleid", 1, NULL, 16},
                 {"titlename", 1, NULL, 17},
                 {"titlepublisher", 1, NULL, 18},
+                {"htmldocdir", 1, NULL, 19},
                 {NULL, 0, NULL, 0},
             };
 
@@ -218,6 +220,10 @@ int main(int argc, char **argv)
                 exit(EXIT_FAILURE);
             }
             break;
+        case 19:
+            filepath_init(&settings.htmldoc_romfs_dir);
+            filepath_set(&settings.htmldoc_romfs_dir, optarg);
+            break;
         default:
             usage();
         }
@@ -298,6 +304,11 @@ int main(int argc, char **argv)
     printf("\n");
     nca_create_control(&settings, &cnmt_ctx);
     printf("\n");
+    if (settings.htmldoc_romfs_dir.valid = VALIDITY_VALID)
+    {
+        nca_create_manual_htmldoc(&settings, &cnmt_ctx);
+        printf("\n");
+    }
     nca_create_meta(&settings, &cnmt_ctx);
     printf("\n");
 
@@ -347,6 +358,10 @@ int main(int argc, char **argv)
         printf("Program NCA Logo Section: Yes\n");
     else
         printf("Program NCA Logo Section: No\n");
+    if (settings.htmldoc_romfs_dir.valid == VALIDITY_VALID)
+        printf("HtmlDoc NCA: Yes\n");
+    else
+        printf("HtmlDoc NCA: No\n");
     printf("Created NSP: %s\n", nsp_file_path.char_path);
 
     free(settings.keyareakey);
