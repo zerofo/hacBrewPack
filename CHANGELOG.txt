@@ -1,3 +1,6 @@
+v2.05
+hacBrewPack now tries to load "keys.txt", "keys.ini", "prod.keys" and "~/.switch/prod.keys" files if "keys.dat" doesn't exist  
+
 v2.00
 Added support for creating HtmlDocument ncas
 

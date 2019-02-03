@@ -241,18 +241,48 @@ int main(int argc, char **argv)
     // Try to populate default keyfile.
     FILE *keyfile = NULL;
     keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+    if (keyfile == NULL)
+    {
+        filepath_set(&keypath, "keys.txt");
+        keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+    }
+    if (keyfile == NULL)
+    {
+        filepath_set(&keypath, "keys.ini");
+        keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+    }
+    if (keyfile == NULL)
+    {
+        filepath_set(&keypath, "prod.keys");
+        keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+    }
+    if (keyfile == NULL)
+    {
+        /* Use $HOME/.switch/prod.keys if it exists */
+        char *home = getenv("HOME");
+        if (home == NULL)
+            home = getenv("USERPROFILE");
+        if (home != NULL)
+        {
+            filepath_set(&keypath, home);
+            filepath_append(&keypath, ".switch");
+            filepath_append(&keypath, "prod.keys");
+            keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+        }
+    }
 
     if (keyfile != NULL)
     {
+        printf("Loading '%s' keyset file\n", keypath.char_path);
         extkeys_initialize_keyset(&settings.keyset, keyfile);
         pki_derive_keys(&settings.keyset);
         fclose(keyfile);
     }
     else
     {
-        fprintf(stderr, "Unable to open keyset '%s'\n"
-                        "Use -k or --keyset to specify your keyset path or place your keyset in ." OS_PATH_SEPARATOR "keys.dat\n",
-                keypath.char_path);
+        printf("\n");
+        fprintf(stderr, "Error: Unable to open keyset file\n"
+                        "Use -k or --keyset to specify your keyset file path or place your keyset in ." OS_PATH_SEPARATOR "keys.dat\n");
         return EXIT_FAILURE;
     }
 

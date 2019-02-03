@@ -11,6 +11,7 @@ Thanks: SciresM, yellows8, Adubbz, SwitchBrew
 ### Keys
 
 You should place your keyset file with "keys.dat" filename in the same folder as hacBrewPack  
+hacBrewPack tries to load "keys.txt", "keys.ini", "prod.keys" and "~/.switch/prod.keys" files if "keys.dat" doesn't exist  
 Alternatively, You can use -k or --keyset option to load your keyset file  
 Required keys are:  
 
