@@ -87,9 +87,8 @@ int main(int argc, char **argv)
 
     filepath_t keypath;
     filepath_init(&keypath);
+
     pki_initialize_keyset(&settings.keyset);
-    // Default keyset filepath
-    filepath_set(&keypath, "keys.dat");
 
     // Default Settings
     settings.keygeneration = 1;
@@ -240,37 +239,45 @@ int main(int argc, char **argv)
 
     // Try to populate default keyfile.
     FILE *keyfile = NULL;
-    keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
-    if (keyfile == NULL)
+    if (keypath.valid == VALIDITY_INVALID)
     {
-        filepath_set(&keypath, "keys.txt");
+        // Locating default key file
+        filepath_set(&keypath, "keys.dat");
         keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
-    }
-    if (keyfile == NULL)
-    {
-        filepath_set(&keypath, "keys.ini");
-        keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
-    }
-    if (keyfile == NULL)
-    {
-        filepath_set(&keypath, "prod.keys");
-        keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
-    }
-    if (keyfile == NULL)
-    {
-        /* Use $HOME/.switch/prod.keys if it exists */
-        char *home = getenv("HOME");
-        if (home == NULL)
-            home = getenv("USERPROFILE");
-        if (home != NULL)
+        if (keyfile == NULL)
         {
-            filepath_set(&keypath, home);
-            filepath_append(&keypath, ".switch");
-            filepath_append(&keypath, "prod.keys");
+            filepath_set(&keypath, "keys.txt");
             keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
         }
+        if (keyfile == NULL)
+        {
+            filepath_set(&keypath, "keys.ini");
+            keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+        }
+        if (keyfile == NULL)
+        {
+            filepath_set(&keypath, "prod.keys");
+            keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+        }
+        if (keyfile == NULL)
+        {
+            /* Use $HOME/.switch/prod.keys if it exists */
+            char *home = getenv("HOME");
+            if (home == NULL)
+                home = getenv("USERPROFILE");
+            if (home != NULL)
+            {
+                filepath_set(&keypath, home);
+                filepath_append(&keypath, ".switch");
+                filepath_append(&keypath, "prod.keys");
+                keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
+            }
+        }
     }
+    else if (keypath.valid == VALIDITY_VALID)
+        keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
 
+    // Try to populate keyfile.
     if (keyfile != NULL)
     {
         printf("Loading '%s' keyset file\n", keypath.char_path);
