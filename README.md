@@ -70,6 +70,7 @@ Options:
 --logodir                Set program logo directory path, default path is ./logo/  
 --controldir             Set control romfs directory path, default path is ./control/  
 --htmldocdir             Set HtmlDocument romfs directory path  
+--legalinfodir           Set LegalInformation romfs directory path  
 --noromfs                Skip creating program romfs section  
 --nologo                 Skip creating program logo section  
 --keygeneration          Set keygeneration for encrypting key area keys  
@@ -77,6 +78,7 @@ Options:
 --sdkversion             Set SDK version in hex, default SDK version is 000C1100  
 --plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
 --keepncadir             Keep NCA directory  
+--nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key  
 Overriding options:  
 --titleid                Use specified titleid for creating ncas and patch titleid in npdm and nacp  
 --titlename              Change title name in nacp for all languages, max size is 512 bytes  
