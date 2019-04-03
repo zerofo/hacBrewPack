@@ -104,6 +104,15 @@ void npdm_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     // Patch ACID public key
     if (settings->nosignncasig2 == 0)
     {
+        // Copy main.npdm to backup directory
+        struct timeval ct;
+        gettimeofday(&ct, NULL);
+        filepath_t bkup_npdm_filepath;
+        filepath_init(&bkup_npdm_filepath);
+        filepath_copy(&bkup_npdm_filepath, &settings->backup_dir);
+        filepath_append(&bkup_npdm_filepath, "%" PRIu64 "_main.npdm", ct.tv_sec);
+        printf("Backing up main.npdm\n");
+        filepath_copy_file(&npdm_filepath, &bkup_npdm_filepath);
         printf("Patching ACID public key\n");
         fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
         fwrite(rsa_get_public_key(), 1, 0x100, fl);

@@ -51,6 +51,7 @@ typedef struct
     filepath_t temp_dir;
     filepath_t nca_dir;
     filepath_t nsp_dir;
+    filepath_t backup_dir;
     filepath_t exefs_dir;
     filepath_t romfs_dir;
     filepath_t logo_dir;

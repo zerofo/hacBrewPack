@@ -222,3 +222,53 @@ int filepath_remove_directory(filepath_t *dir_path)
 
     return r;
 }
+
+void filepath_copy_file(filepath_t *source_file, filepath_t *destination_path)
+{
+    uint64_t file_size;
+    FILE *source;
+    FILE *dst;
+    source = os_fopen(source_file->os_path, OS_MODE_READ);
+    dst = os_fopen(destination_path->os_path, OS_MODE_WRITE);
+
+    if (source == NULL)
+    {
+        fprintf(stderr, "Failed to open %s!\n", source_file->char_path);
+        exit(EXIT_FAILURE);
+    }
+    if (dst == NULL)
+    {
+        fprintf(stderr, "Failed to open %s!\n", destination_path->char_path);
+        exit(EXIT_FAILURE);
+    }
+
+    fseeko64(source, 0, SEEK_END);
+    file_size = ftello64(source);
+    fseeko64(source, 0, SEEK_SET);
+
+    uint64_t read_size = 0x61A8000; // 100 MB buffer.
+    unsigned char *buf = malloc(read_size);
+    if (buf == NULL)
+    {
+        fprintf(stderr, "Failed to allocate file-read buffer!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    uint64_t ofs = 0;
+    while (ofs < file_size)
+    {
+        if (ofs + read_size >= file_size)
+            read_size = file_size - ofs;
+        if (fread(buf, 1, read_size, source) != read_size)
+        {
+            fprintf(stderr, "Failed to read file %s\n", source_file->char_path);
+            exit(EXIT_FAILURE);
+        }
+        fwrite(buf, read_size, 1, dst);
+        ofs += read_size;
+    }
+
+    free(buf);
+    fclose(source);
+    fclose(dst);
+}

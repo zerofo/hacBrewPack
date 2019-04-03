@@ -26,6 +26,7 @@ static void usage(void)
             "--tempdir                Set temp directory filepath, default filepath is ." OS_PATH_SEPARATOR "hacbrewpack_temp" OS_PATH_SEPARATOR "\n"
             "--ncadir                 Set output nca directory path, default path is ." OS_PATH_SEPARATOR "hacbrewpack_nca" OS_PATH_SEPARATOR "\n"
             "--nspdir                 Set output nsp directory path, default path is ." OS_PATH_SEPARATOR "hacbrewpack_nsp" OS_PATH_SEPARATOR "\n"
+            "--backupdir              Set backup directory path, default path is ." OS_PATH_SEPARATOR "hacbrewpack_backup" OS_PATH_SEPARATOR "\n"
             "--exefsdir               Set program exefs directory path, default path is ." OS_PATH_SEPARATOR "exefs" OS_PATH_SEPARATOR "\n"
             "--romfsdir               Set program romfs directory path, default path is ." OS_PATH_SEPARATOR "romfs" OS_PATH_SEPARATOR "\n"
             "--logodir                Set program logo directory path, default path is ." OS_PATH_SEPARATOR "logo" OS_PATH_SEPARATOR "\n"
@@ -69,6 +70,10 @@ int main(int argc, char **argv)
     // Hardcode default output nsp directory
     filepath_init(&settings.nsp_dir);
     filepath_set(&settings.nsp_dir, "hacbrewpack_nsp");
+
+    // Hardcode default backup directory
+    filepath_init(&settings.backup_dir);
+    filepath_set(&settings.backup_dir, "hacbrewpack_backup");
 
     // Hardcode Program exeFS directory
     filepath_init(&settings.exefs_dir);
@@ -127,6 +132,7 @@ int main(int argc, char **argv)
                 {"htmldocdir", 1, NULL, 19},
                 {"nosignncasig2", 0, NULL, 20},
                 {"legalinfodir", 1, NULL, 21},
+                {"backupdir", 1, NULL, 22},
                 {NULL, 0, NULL, 0},
             };
 
@@ -233,6 +239,9 @@ int main(int argc, char **argv)
             filepath_init(&settings.legalinfo_romfs_dir);
             filepath_set(&settings.legalinfo_romfs_dir, optarg);
             break;
+        case 22:
+            filepath_set(&settings.backup_dir, optarg);
+            break;
         default:
             usage();
         }
@@ -242,10 +251,11 @@ int main(int argc, char **argv)
     printf("Removing existing temp and nca directories\n");
     filepath_remove_directory(&settings.temp_dir);
     filepath_remove_directory(&settings.nca_dir);
-    printf("Creating temp, nca and nsp directories\n");
+    printf("Creating temp, nca, nsp and backup directories\n");
     os_makedir(settings.temp_dir.os_path);
     os_makedir(settings.nca_dir.os_path);
     os_makedir(settings.nsp_dir.os_path);
+    os_makedir(settings.backup_dir.os_path);
 
     // Try to populate default keyfile.
     FILE *keyfile = NULL;

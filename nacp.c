@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/time.h>
 #include "nacp.h"
 #include "filepath.h"
 
@@ -93,14 +94,30 @@ void nacp_process(hbp_settings_t *settings)
         nacp.PresenceGroupId = settings->title_id;
         nacp.SaveDataOwnerId = settings->title_id;
         nacp.AddOnContentBaseId = settings->title_id + 0x1000;
-        for (int x=0; x<8; x++)
+        for (int x = 0; x < 8; x++)
             nacp.LocalCommunicationId[x] = settings->title_id;
     }
 
-    // Write NACP
-    printf("Writing control.nacp\n");
-    fseeko64(fl, 0, SEEK_SET);
-    fwrite(&nacp, 1, sizeof(nacp_t), fl);
+    // Backup and re-write NACP
+    if (settings->titlename[0] != 0x00 || settings->titlepublisher[0] != 0x00 || settings->title_id != 0 || settings->nopatchnacplogo == 0)
+    {
+        // Copy control.nacp to backup directory
+        struct timeval ct;
+        gettimeofday(&ct, NULL);
+        filepath_t nacp_filepath;
+        filepath_t bkup_nacp_filepath;
+        filepath_init(&nacp_filepath);
+        filepath_copy(&nacp_filepath, &settings->control_romfs_dir);
+        filepath_append(&nacp_filepath, "control.nacp");
+        filepath_init(&bkup_nacp_filepath);
+        filepath_copy(&bkup_nacp_filepath, &settings->backup_dir);
+        filepath_append(&bkup_nacp_filepath, "%" PRIu64 "_control.nacp", ct.tv_sec);
+        printf("Backing up control.nacp\n");
+        filepath_copy_file(&nacp_filepath, &bkup_nacp_filepath);
+        printf("Writing control.nacp\n");
+        fseeko64(fl, 0, SEEK_SET);
+        fwrite(&nacp, 1, sizeof(nacp_t), fl);
+    }
 
     fclose(fl);
 }
