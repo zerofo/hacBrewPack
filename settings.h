@@ -56,6 +56,7 @@ typedef struct
     filepath_t logo_dir;
     filepath_t control_romfs_dir;
     filepath_t htmldoc_romfs_dir;
+    filepath_t legalinfo_romfs_dir;
     uint8_t noromfs;
     uint8_t nologo;
     uint8_t plaintext;

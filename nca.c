@@ -296,6 +296,150 @@ void nca_create_manual_htmldoc(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     printf("\n----> Created Manual(HtmlDoc) NCA: %s\n", manual_htmldoc_nca_final_path.char_path);
 }
 
+void nca_create_manual_legalinfo(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
+{
+    printf("----> Creating Manual(LegalInfo) NCA:\n");
+    printf("===> Creating NCA header\n");
+    nca_header_t nca_header;
+    memset(&nca_header, 0, sizeof(nca_header));
+
+    filepath_t manual_legalinfo_nca_path;
+    filepath_init(&manual_legalinfo_nca_path);
+    filepath_copy(&manual_legalinfo_nca_path, &settings->nca_dir);
+    filepath_append(&manual_legalinfo_nca_path, "manual_legalinfo.nca");
+
+    FILE *manual_legalinfo_nca_file;
+    manual_legalinfo_nca_file = os_fopen(manual_legalinfo_nca_path.os_path, OS_MODE_WRITE_EDIT);
+
+    // Write placeholder for NCA header
+    printf("Writing NCA header placeholder to %s\n", manual_legalinfo_nca_path.char_path);
+    if (manual_legalinfo_nca_file != NULL)
+        fwrite(&nca_header, 1, sizeof(nca_header), manual_legalinfo_nca_file);
+    else
+    {
+        fprintf(stderr, "Failed to create %s!\n", manual_legalinfo_nca_path.char_path);
+        exit(EXIT_FAILURE);
+    }
+
+    printf("\n---> Creating Section 0:");
+
+    // Set IVFC levels temp filepaths
+    filepath_t ivfc_lvls_path[6];
+    for (int a = 0; a < 6; a++)
+    {
+        filepath_init(&ivfc_lvls_path[a]);
+        filepath_copy(&ivfc_lvls_path[a], &settings->temp_dir);
+        filepath_append(&ivfc_lvls_path[a], "manual_legalinfo_sec0_ivfc_lvl%i", a + 1);
+    }
+
+    //Build RomFS
+    printf("\n===> Building RomFS\n");
+    romfs_build(&settings->legalinfo_romfs_dir, &ivfc_lvls_path[5], &nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[5].hash_data_size);
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[5].block_size = 0x0E; // 0x4000
+
+    // Create IVFC levels
+    printf("\n===> Creating IVFC levels\n");
+    for (int b = 4; b >= 0; b--)
+    {
+        printf("Writing %s\n", ivfc_lvls_path[b].char_path);
+        ivfc_create_level(&ivfc_lvls_path[b], &ivfc_lvls_path[b + 1], &nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[b].hash_data_size);
+        nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[b].block_size = 0x0E; // 0x4000
+    }
+
+    // Set IVFC levels logical offset
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[0].logical_offset = 0;
+    for (int i = 1; i <= 5; i++)
+        nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[i].logical_offset = nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[i - 1].logical_offset + nca_header.fs_headers[0].romfs_superblock.ivfc_header.level_headers[i - 1].hash_data_size;
+
+    // Write IVFC levels
+    printf("\n===> Writing IVFC levels\n");
+    for (int c = 0; c < 6; c++)
+    {
+        printf("Writing %s to %s\n", ivfc_lvls_path[c].char_path, manual_legalinfo_nca_path.char_path);
+        nca_write_file(manual_legalinfo_nca_file, &ivfc_lvls_path[c]);
+    }
+
+    // Write Padding if required
+    nca_write_padding(manual_legalinfo_nca_file);
+
+    // Common values
+    nca_header.magic = MAGIC_NCA3;
+    nca_header.content_type = 0x3; // Manual
+    nca_header.sdk_version = settings->sdk_version;
+    nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
+    nca_set_keygen(&nca_header, settings);
+
+    nca_header.section_entries[0].media_start_offset = 0x6;                                                 // 0xC00 / 0x200
+    nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(manual_legalinfo_nca_file) / 0x200); // Section end offset / 200
+    nca_header.section_entries[0]._0x8[0] = 0x1;                                                            // Always 1
+
+    nca_header.fs_headers[0].hash_type = HASH_TYPE_ROMFS;
+    nca_header.fs_headers[0].version = 0x2; // Always 2
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.magic = MAGIC_IVFC;
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.id = 0x20000; //Always 0x20000
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.master_hash_size = 0x20;
+    nca_header.fs_headers[0].romfs_superblock.ivfc_header.num_levels = 0x7;
+    if (settings->plaintext == 0)
+        nca_header.fs_headers[0].crypt_type = 0x3; // Regular crypto
+    else
+        nca_header.fs_headers[0].crypt_type = 0x1; // Plaintext
+
+    // Calculate master hash and section hash
+    printf("\n===> Calculating Hashes:\n");
+    printf("Calculating Master hash\n");
+    ivfc_calculate_master_hash(&ivfc_lvls_path[0], nca_header.fs_headers[0].romfs_superblock.ivfc_header.master_hash);
+    printf("Calculating Section hash\n");
+    nca_calculate_section_hash(&nca_header.fs_headers[0], nca_header.section_hashes[0]);
+
+    printf("\n---> Finalizing:\n");
+
+    // Set encrypted key area key 2
+    memcpy(nca_header.encrypted_keys[2], settings->keyareakey, 0x10);
+
+    printf("===> Encrypting NCA\n");
+    if (settings->plaintext == 0)
+    {
+        // Encrypt section 0
+        printf("Encrypting section 0\n");
+        nca_encrypt_section(manual_legalinfo_nca_file, &nca_header, 0);
+    }
+
+    // Encrypt header
+    printf("Getting NCA file size\n");
+    fseeko64(manual_legalinfo_nca_file, 0, SEEK_END);
+    nca_header.nca_size = (uint64_t)ftello64(manual_legalinfo_nca_file);
+    printf("Encrypting key area\n");
+    nca_encrypt_key_area(&nca_header, settings);
+    printf("Encrypting header\n");
+    nca_encrypt_header(&nca_header, settings);
+
+    // Write MCA header
+    printf("\n===> Writing NCA header\n");
+    printf("Writing NCA header to %s\n", manual_legalinfo_nca_path.char_path);
+    fseeko64(manual_legalinfo_nca_file, 0, SEEK_SET);
+    fwrite(&nca_header, 1, sizeof(nca_header), manual_legalinfo_nca_file);
+
+    // Calculate hash and nca size
+    printf("\n===> Post creation process\n");
+    printf("Calculating NCA hash\n");
+    nca_calculate_hash(manual_legalinfo_nca_file, cnmt_ctx, 4);
+
+    fclose(manual_legalinfo_nca_file);
+
+    // Rename manual_htmldoc.nca to ncaid.nca
+    filepath_t manual_legalinfo_nca_final_path;
+    filepath_init(&manual_legalinfo_nca_final_path);
+    filepath_copy(&manual_legalinfo_nca_final_path, &settings->nca_dir);
+    char manual_legalinfo_nca_name[37];
+    hexBinaryString(cnmt_ctx->cnmt_content_records[4].ncaid, 16, manual_legalinfo_nca_name, 33);
+    strcat(manual_legalinfo_nca_name, ".nca");
+    manual_legalinfo_nca_name[36] = '\0';
+    printf("Renaming manual_legalinfo.nca to %s\n", manual_legalinfo_nca_name);
+    filepath_append(&manual_legalinfo_nca_final_path, "%s", manual_legalinfo_nca_name);
+    os_rename(manual_legalinfo_nca_path.os_path, manual_legalinfo_nca_final_path.os_path);
+    printf("\n----> Created Manual(LegalInfo) NCA: %s\n", manual_legalinfo_nca_final_path.char_path);
+}
+
 void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 {
     printf("----> Creating Program NCA:\n");

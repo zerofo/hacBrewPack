@@ -95,6 +95,7 @@ typedef struct
 
 void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
 void nca_create_manual_htmldoc(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
+void nca_create_manual_legalinfo(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
 void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
 void nca_create_meta(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx);
 void nca_write_padding(FILE *nca_file);

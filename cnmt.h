@@ -37,7 +37,7 @@ typedef struct {
 
 typedef struct {
     cnmt_header_t cnmt_header;
-    cnmt_content_record_t cnmt_content_records[4];
+    cnmt_content_record_t cnmt_content_records[5];
 } cnmt_ctx_t;
 
 void cnmt_create(cnmt_ctx_t *cnmt_ctx, filepath_t *cnmt_filepath, hbp_settings_t *settings);
