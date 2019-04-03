@@ -62,9 +62,10 @@ Windows: .\hacbrewpack.exe [options...]
 Options:  
 -k, --keyset             Set keyset filepath, default filepath is ./keys.dat  
 -h, --help               Display usage  
---tempdir                Set temp directory filepath, default filepath is ./hacbrewpack_temp/  
---ncadir                 Set output nca directory path, default path is ./hacbrewpack_nca/  
 --nspdir                 Set output nsp directory path, default path is ./hacbrewpack_nsp/  
+--ncadir                 Set output nca directory path, default path is ./hacbrewpack_nca/  
+--tempdir                Set temp directory filepath, default filepath is ./hacbrewpack_temp/  
+--backupdir              Set output nsp directory path, default path is ./hacbrewpack_backup/  
 --exefsdir               Set program exefs directory path, default path is ./exefs/  
 --romfsdir               Set program romfs directory path, default path is ./romfs/  
 --logodir                Set program logo directory path, default path is ./logo/  
