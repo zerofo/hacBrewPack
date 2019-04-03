@@ -33,7 +33,7 @@ int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *
     pfs0_file_entry_t fsentries[MAX_FS_ENTRIES];
     pfs0_file_entry_t *fsentry;
 
-    char objpath[257];
+    char objpath[1501];
 
     char stringtable[0x100];
 
