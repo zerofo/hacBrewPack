@@ -1,6 +1,6 @@
 v3.00
 Added support for creating LegalInformation NCA
-Added nca signature 2 signing using self-generated acid public key
+Added program nca signature 2 signing using self-generated acid public key
 Added automatic backup from main.npdm and control.nacp
 Fixed a bug in loading keyset file
 
