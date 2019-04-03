@@ -61,6 +61,7 @@ typedef struct
     uint8_t plaintext;
     uint8_t keepncadir;
     uint8_t nopatchnacplogo;
+    uint8_t nosignncasig2;
     uint64_t title_id;
     char titlename[0x200];
     char titlepublisher[0x200];

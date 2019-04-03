@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include "filepath.h"
 #include "npdm.h"
+#include "rsa.h"
 
 void npdm_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 {
@@ -98,6 +99,14 @@ void npdm_process(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
         // Seek to titleid offset and write new titleid
         fseeko64(fl, npdm.aci0_offset + 0x10, SEEK_SET);
         fwrite(&settings->title_id, 1, 8, fl);
+    }
+
+    // Patch ACID public key
+    if (settings->nosignncasig2 == 0)
+    {
+        printf("Patching ACID public key\n");
+        fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
+        fwrite(rsa_get_public_key(), 1, 0x100, fl);
     }
 
     fclose(fl);

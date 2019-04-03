@@ -6,6 +6,7 @@
 #include "sha.h"
 #include "filepath.h"
 #include "romfs.h"
+#include "rsa.h"
 
 void nca_create_control(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 {
@@ -224,9 +225,9 @@ void nca_create_manual_htmldoc(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.title_id = cnmt_ctx->cnmt_header.title_id;
     nca_set_keygen(&nca_header, settings);
 
-    nca_header.section_entries[0].media_start_offset = 0x6;                                          // 0xC00 / 0x200
+    nca_header.section_entries[0].media_start_offset = 0x6;                                                 // 0xC00 / 0x200
     nca_header.section_entries[0].media_end_offset = (uint32_t)(ftello64(manual_htmldoc_nca_file) / 0x200); // Section end offset / 200
-    nca_header.section_entries[0]._0x8[0] = 0x1;                                                     // Always 1
+    nca_header.section_entries[0]._0x8[0] = 0x1;                                                            // Always 1
 
     nca_header.fs_headers[0].hash_type = HASH_TYPE_ROMFS;
     nca_header.fs_headers[0].version = 0x2; // Always 2
@@ -482,7 +483,7 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
 
         nca_header.fs_headers[2].hash_type = HASH_TYPE_PFS0;
         nca_header.fs_headers[2].fs_type = FS_TYPE_PFS0;
-        nca_header.fs_headers[2].version = 0x2;       // Always 2
+        nca_header.fs_headers[2].version = 0x2;    // Always 2
         nca_header.fs_headers[2].crypt_type = 0x1; // Plain text
         nca_header.fs_headers[2].pfs0_superblock.always_2 = 0x2;
         nca_header.fs_headers[2].pfs0_superblock.block_size = logo_hash_block_size;
@@ -519,6 +520,11 @@ void nca_create_program(hbp_settings_t *settings, cnmt_ctx_t *cnmt_ctx)
     nca_header.nca_size = (uint64_t)ftello64(program_nca_file);
     printf("Encrypting key area\n");
     nca_encrypt_key_area(&nca_header, settings);
+    if (settings->nosignncasig2 == 0)
+    {
+        printf("Signing nca header\n");
+        rsa_sign(&nca_header.magic, 0x200, (unsigned char *)&nca_header.npdm_key_sig, 0x100);
+    }
     printf("Encrypting header\n");
     nca_encrypt_header(&nca_header, settings);
 

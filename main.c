@@ -39,6 +39,7 @@ static void usage(void)
             "--sdkversion             Set SDK version in hex, default SDK version is 000C1100\n"
             "--plaintext              Skip encrypting sections and set section header block crypto type to plaintext\n"
             "--keepncadir             Keep NCA directory\n"
+            "--nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key\n"
             "Overriding options:\n"
             "--titleid                Use specified titleid for creating ncas and patch titleid in npdm and nacp\n"
             "--titlename              Change title name in nacp for all languages, max size is 512 bytes\n"
@@ -124,6 +125,7 @@ int main(int argc, char **argv)
                 {"titlename", 1, NULL, 17},
                 {"titlepublisher", 1, NULL, 18},
                 {"htmldocdir", 1, NULL, 19},
+                {"nosignncasig2", 0, NULL, 20},
                 {NULL, 0, NULL, 0},
             };
 
@@ -222,6 +224,9 @@ int main(int argc, char **argv)
         case 19:
             filepath_init(&settings.htmldoc_romfs_dir);
             filepath_set(&settings.htmldoc_romfs_dir, optarg);
+            break;
+        case 20:
+            settings.nosignncasig2 = 1;
             break;
         default:
             usage();
