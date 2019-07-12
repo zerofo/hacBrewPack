@@ -1,15 +1,17 @@
-## hacBrewPack - Template
+# hacBrewPack - Template
 
-### Makefile:
+## Makefile
 
 Generic 'Makefile' that you can use to compile homebrews  
 
-### npdm.json:
+## npdm.json
+
 Generic NPDM json file which libnx reads during compile and makes npdm from it  
 It needs to be modified based on your app  
 Check switchbrew for more information: [http://switchbrew.org/index.php/NPDM](http://switchbrew.org/index.php/NPDM)
 
-### Folder structure:
+## Folder structure
+
 Default folders structure:
 ```
 hacbrewpack
@@ -39,7 +41,8 @@ hacbrewpack_out: contains nsp
 hacbrewpack_nca: contains ncas  
 hacbrewpack_temp: temporary files  
 
-### Keygeneration
+## Keygeneration
+
 Keygeneration is a key that hacBrewPack use to encrypt key area in ncas  
 It is a number between 1-32 and it describes the 'key_area_key_application' key that hacBrewPack use in encryption  
 Firmwares always support applications with keygenerations up to the keygeneration they ship with  
@@ -53,4 +56,5 @@ Keygeneration | Firmware
 5 | 5.0.0 - 5.1.0
 6 | 6.0.0 - 6.1.0
 7 | 6.2.0
-8 | 7.0.0 - 8.0.0
+8 | 7.0.0 - 8.0.1
+9 | 8.1.0
