@@ -2,7 +2,7 @@
     "name": "hbmenu",
     "title_id": "0x0104444444441001",
     "title_id_range_min": "0x0104444444441001",
-	"title_id_range_max": "0x0104444444441001",
+    "title_id_range_max": "0x0104444444441001",
     "main_thread_stack_size": "0x100000",
     "main_thread_priority": 44,
     "default_cpu_id": 0,
