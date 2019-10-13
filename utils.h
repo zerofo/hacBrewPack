@@ -22,7 +22,7 @@
 /* On the switch, paths are limited to 0x300. Limit them to 0x400 - 1 on PC. */
 /* MAX_PATH is previously defined in "windef.h" on WIN32. */
 #ifndef MAX_PATH
-#define MAX_PATH 1023
+#define MAX_PATH 4095
 #endif
 
 void memdump(FILE *f, const char *prefix, const void *data, size_t size);

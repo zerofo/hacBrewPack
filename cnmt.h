@@ -31,7 +31,7 @@ typedef struct {
     unsigned char ncaid[0x10];
     uint8_t size[0x06];
     uint8_t type;
-    uint8_t _0x37;
+    uint8_t id_offset;
 } cnmt_content_record_t;
 #pragma pack(pop)
 
