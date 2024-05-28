@@ -24,8 +24,6 @@ stdenv.mkDerivation rec {
     description = "Make NCAs/NSPs from Nintendo Switch homebrews";
     longDescription = "hacBrewPack is a tool for creating Nintendo Switch NCAs (Nintendo Content Archive) from homebrews and pack them into NSPs (Nintendo Submission Package)
     Thanks: SciresM, yellows8, Adubbz, SwitchBrew";
-    license = licenses.gpl2;
-    platforms = platforms.unix;
     mainProgram = "hacBrewPack";
   };
 }
