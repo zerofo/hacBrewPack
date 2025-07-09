@@ -20,7 +20,7 @@ jobs:
     - name: Build project
       run: |
           git config --global --add safe.directory `pwd` 
-          apt install imagemagick gcc libmbedtls-dev -y
+          sudo -E apt install imagemagick gcc libmbedtls-dev -y
           cd src
           mv config.mk.template config.mk
           make -j 
