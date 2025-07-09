@@ -24,6 +24,7 @@ jobs:
           cd src
           mv config.mk.template config.mk
           make -j 
+          ls
           
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
