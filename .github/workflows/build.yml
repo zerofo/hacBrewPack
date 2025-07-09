@@ -20,7 +20,10 @@ jobs:
     - name: Build project
       run: |
           git config --global --add safe.directory `pwd` 
-          make -j
+          apt install imagemagick gcc libmbedtls-dev -y
+          cd src
+          mv config.mk.template config.mk
+          make -j 
           
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
